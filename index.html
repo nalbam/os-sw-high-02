@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>클린턴 - 청소 당번 알림</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="주요 메뉴">
+        <a class="brand" href="#top" aria-label="클린턴 홈">🧹 클린턴</a>
+        <a href="#planner">당번 만들기</a>
+        <a href="#schedule">이번 주 순서</a>
+        <a href="#reminder">알림 설정</a>
+      </nav>
+      <section class="hero__content" id="top">
+        <p class="eyebrow">청소 당번을 자꾸 잊는 팀을 위한 인터넷 서비스</p>
+        <h1>내 차례 전에 미리 알려주고, 끝나면 다음 사람에게 넘겨요.</h1>
+        <p>
+          반·동아리·쉐어하우스 구성원을 입력하면 공평한 순번표를 만들고,
+          오늘의 당번과 다음 당번을 한눈에 보여줍니다.
+        </p>
+        <div class="hero__actions">
+          <a class="button button--primary" href="#planner">무료로 순번표 만들기</a>
+          <a class="button button--ghost" href="#features">어떻게 해결하나요?</a>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="problem" id="features" aria-labelledby="problem-title">
+        <div>
+          <p class="eyebrow">문제 해결 방식</p>
+          <h2 id="problem-title">“오늘 누구야?”라는 질문을 없애는 3단계</h2>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <span>1</span>
+            <h3>구성원 입력</h3>
+            <p>이름을 쉼표나 줄바꿈으로 넣으면 바로 순번표를 생성합니다.</p>
+          </article>
+          <article>
+            <span>2</span>
+            <h3>자동 순환</h3>
+            <p>청소 주기와 시작일을 기준으로 매번 다음 당번을 계산합니다.</p>
+          </article>
+          <article>
+            <span>3</span>
+            <h3>브라우저 알림</h3>
+            <p>알림 권한을 켜면 내 차례를 놓치지 않도록 미리 알려줍니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="app-shell" id="planner" aria-labelledby="planner-title">
+        <div class="panel setup-panel">
+          <p class="eyebrow">순번표 생성기</p>
+          <h2 id="planner-title">우리 팀 청소 당번표 만들기</h2>
+          <form id="duty-form">
+            <label>
+              팀 이름
+              <input id="team-name" type="text" value="2학년 3반" maxlength="24" />
+            </label>
+            <label>
+              구성원 이름
+              <textarea id="members" rows="6">민준, 서연, 지호, 하윤, 도윤, 유나</textarea>
+            </label>
+            <div class="form-row">
+              <label>
+                시작일
+                <input id="start-date" type="date" />
+              </label>
+              <label>
+                청소 주기
+                <select id="frequency">
+                  <option value="1">매일</option>
+                  <option value="2">이틀마다</option>
+                  <option value="7">매주</option>
+                </select>
+              </label>
+            </div>
+            <button class="button button--primary" type="submit">순번표 업데이트</button>
+          </form>
+        </div>
+
+        <div class="panel status-card" aria-live="polite">
+          <p class="eyebrow" id="team-label">오늘의 당번</p>
+          <h2 id="today-person">-</h2>
+          <p id="today-message">정보를 입력하면 오늘의 당번을 알려드려요.</p>
+          <div class="completion-box">
+            <button class="button button--success" id="complete-duty" type="button">청소 완료</button>
+            <p id="completion-message">완료 버튼을 누르면 다음 차례가 강조됩니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="schedule-section" id="schedule" aria-labelledby="schedule-title">
+        <div>
+          <p class="eyebrow">이번 주 순서</p>
+          <h2 id="schedule-title">앞으로 7번의 청소 당번</h2>
+        </div>
+        <ol class="schedule-list" id="schedule-list"></ol>
+      </section>
+
+      <section class="reminder" id="reminder" aria-labelledby="reminder-title">
+        <div>
+          <p class="eyebrow">잊지 않도록</p>
+          <h2 id="reminder-title">브라우저 알림으로 미리 확인하기</h2>
+          <p>
+            이 데모는 개인정보를 서버로 보내지 않고 브라우저에만 저장합니다.
+            실제 서비스에서는 카카오톡·문자·이메일 연동으로 확장할 수 있어요.
+          </p>
+        </div>
+        <button class="button button--primary" id="enable-notification" type="button">알림 권한 켜기</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 클린턴. 더 이상 청소 차례를 잊지 않도록.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
