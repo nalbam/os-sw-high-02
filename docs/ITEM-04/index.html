@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#faf3e2">
+<title>오늘 할 일</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #faf3e2;
+    --paper-soft: #fffdf7;
+    --ink: #2a2620;
+    --ink-soft: #6b6358;
+    --ink-fade: #b3a994;
+    --rule: rgba(140, 100, 70, 0.13);
+    --line-dash: rgba(60, 50, 30, 0.12);
+
+    --hl-kor:  #ff8e8e;
+    --hl-eng:  #82baff;
+    --hl-math: #ffd25e;
+    --hl-sci:  #9fd98a;
+    --hl-soc:  #c79bff;
+    --hl-etc:  #d3c6a8;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent 0,
+      transparent 31px,
+      var(--rule) 31px,
+      var(--rule) 32px
+    );
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(255, 200, 110, 0.10) 0, transparent 45%),
+      radial-gradient(circle at 88% 72%, rgba(200, 130, 70, 0.07) 0, transparent 55%);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 22px calc(120px + env(safe-area-inset-bottom));
+  }
+
+  header { margin-bottom: 22px; }
+
+  .date {
+    font-family: "Gaegu", "Gowun Dodum", sans-serif;
+    font-size: 21px;
+    color: var(--ink-soft);
+    margin: 0 0 2px;
+    letter-spacing: -0.5px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .title {
+    font-family: "Gaegu", sans-serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+  }
+
+  .title::after {
+    content: "";
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    bottom: 4px;
+    height: 16px;
+    background: var(--hl-math);
+    z-index: -1;
+    opacity: 0.6;
+    transform: skewX(-4deg) rotate(-0.5deg);
+    border-radius: 2px;
+  }
+
+  .progress {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .progress-text {
+    font-family: "Gaegu", sans-serif;
+    font-size: 22px;
+    color: var(--ink);
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .progress-text b {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .progress-text .slash {
+    color: var(--ink-fade);
+    margin: 0 2px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--hl-math) 0%, var(--hl-sci) 100%);
+    width: 0%;
+    transition: width 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  .progress-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0 6px,
+      rgba(255, 255, 255, 0.25) 6px 8px
+    );
+  }
+
+  .input-card {
+    margin-top: 24px;
+    padding: 16px 16px 14px;
+    background: var(--paper-soft);
+    border: 2px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 0 var(--ink);
+    position: relative;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .task-input {
+    flex: 1;
+    min-width: 0;
+    height: 54px;
+    border: none;
+    background: transparent;
+    font-family: "Gowun Dodum", sans-serif;
+    font-size: 17px;
+    color: var(--ink);
+    padding: 0 6px;
+    outline: none;
+  }
+  .task-input::placeholder { color: var(--ink-fade); }
+
+  .add-btn {
+    flex: 0 0 auto;
+    height: 54px;
+    min-width: 72px;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "Gaegu", sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+    border-radius: 14px;
+    cursor: pointer;
+    padding: 0 18px;
+    transition: transform 80ms ease;
+    letter-spacing: -0.5px;
+  }
+  .add-btn:active { transform: translateY(2px) scale(0.98); }
+  .add-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .subjects {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .subject-pill {
+    flex: 0 0 auto;
+    height: 40px;
+    padding: 0 16px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-family: "Gaegu", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: transform 100ms ease, box-shadow 100ms ease, background 140ms;
+    letter-spacing: -0.5px;
+  }
+  .subject-pill .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c, var(--hl-etc));
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
+  .subject-pill.active {
+    background: var(--c, var(--hl-etc));
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+  .subject-pill.active .dot { background: var(--ink); }
+
+  .list {
+    margin-top: 28px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 48px 16px 32px;
+    color: var(--ink-fade);
+    font-family: "Gaegu", sans-serif;
+    font-size: 23px;
+    letter-spacing: -0.5px;
+  }
+
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 4px;
+    min-height: 60px;
+    border-bottom: 1.5px dashed var(--line-dash);
+    cursor: pointer;
+    animation: slide 280ms ease both;
+    transition: opacity 220ms ease;
+  }
+  @keyframes slide {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .checkbox {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border: 2.5px solid var(--ink);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-soft);
+    transition: background 180ms ease, transform 120ms ease;
+  }
+  .task.done .checkbox {
+    background: var(--c, var(--ink));
+    transform: scale(1.04);
+  }
+  .checkbox svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--ink);
+    stroke-width: 3.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    transition: stroke-dashoffset 280ms ease 60ms;
+  }
+  .task.done .checkbox svg { stroke-dashoffset: 0; }
+
+  .task-text {
+    flex: 1;
+    font-size: 18px;
+    color: var(--ink);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    transition: color 220ms ease;
+    user-select: none;
+  }
+  .task .label {
+    transition: text-decoration-color 220ms ease;
+    text-decoration: line-through transparent;
+    text-decoration-thickness: 2px;
+  }
+  .task.done .task-text { color: var(--ink-fade); }
+  .task.done .label {
+    text-decoration-color: var(--ink-fade);
+  }
+
+  .subj-tag {
+    font-family: "Gaegu", sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--c, var(--hl-etc));
+    padding: 2px 10px 3px;
+    border-radius: 999px;
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: 2px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.3px;
+    border: 1.5px solid var(--ink);
+  }
+  .task.done .subj-tag { opacity: 0.5; }
+
+  .del {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--ink-fade);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity 120ms, background 120ms;
+    font-family: "Gowun Dodum", sans-serif;
+  }
+  .del:hover { opacity: 1; }
+  .del:active { background: rgba(0, 0, 0, 0.06); }
+
+  .celebrate {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    padding: 0 24px;
+  }
+  .celebrate.show { opacity: 1; }
+  .celebrate-card {
+    background: var(--paper-soft);
+    border: 2.5px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 6px 6px 0 0 var(--ink);
+    padding: 24px 32px;
+    font-family: "Gaegu", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    letter-spacing: -1px;
+    transform: scale(0.7) rotate(-3deg);
+    transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    line-height: 1.2;
+  }
+  .celebrate.show .celebrate-card { transform: scale(1) rotate(-2deg); }
+  .celebrate-card::before {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 2px dashed var(--ink);
+    border-radius: 32px;
+    opacity: 0.28;
+  }
+
+  .footer-note {
+    margin-top: 56px;
+    text-align: center;
+    font-family: "Gaegu", sans-serif;
+    font-size: 16px;
+    color: var(--ink-fade);
+    letter-spacing: -0.3px;
+  }
+
+  @media (max-width: 380px) {
+    .wrap { padding: 22px 16px calc(120px + env(safe-area-inset-bottom)); }
+    .title { font-size: 40px; }
+    .subject-pill { font-size: 18px; padding: 0 13px; height: 38px; }
+    .progress-text { font-size: 20px; }
+    .progress-text b { font-size: 25px; }
+    .add-btn { font-size: 22px; min-width: 64px; padding: 0 14px; }
+    .celebrate-card { font-size: 30px; padding: 20px 26px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="date" id="date"></p>
+      <div class="title-row">
+        <h1 class="title">오늘 할 일</h1>
+      </div>
+      <div class="progress" aria-live="polite">
+        <span class="progress-text">
+          오늘 <b id="done-count">0</b><span class="slash"> / </span><span id="total-count">0</span> 완료
+        </span>
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar">
+          <div class="progress-fill" id="fill"></div>
+        </div>
+      </div>
+    </header>
+
+    <form class="input-card" id="form" autocomplete="off">
+      <div class="input-row">
+        <input class="task-input" id="input" type="text" placeholder="할 일을 적어보자" maxlength="80" enterkeyhint="done" />
+        <button class="add-btn" id="add" type="submit">추가</button>
+      </div>
+      <div class="subjects" id="subjects" role="radiogroup" aria-label="과목 선택"></div>
+    </form>
+
+    <ul class="list" id="list"></ul>
+    <div class="empty" id="empty" hidden>오늘 할 일을 적어보자 ✍️</div>
+
+    <div class="footer-note">자정이 지나면 새 목록으로 넘어가요</div>
+  </div>
+
+  <div class="celebrate" id="celebrate" aria-hidden="true">
+    <div class="celebrate-card">오늘 다 했어요 👏</div>
+  </div>
+
+  <script>
+    const SUBJECTS = [
+      { id: "kor",  name: "국",   color: "var(--hl-kor)"  },
+      { id: "eng",  name: "영",   color: "var(--hl-eng)"  },
+      { id: "math", name: "수",   color: "var(--hl-math)" },
+      { id: "sci",  name: "과",   color: "var(--hl-sci)"  },
+      { id: "soc",  name: "사",   color: "var(--hl-soc)"  },
+      { id: "etc",  name: "기타", color: "var(--hl-etc)"  }
+    ];
+
+    const KEY = "today_tasks_v1";
+
+    function todayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function formatDate() {
+      const d = new Date();
+      const days = ["일","월","화","수","목","금","토"];
+      return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${days[d.getDay()]}요일`;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return { date: todayKey(), tasks: [] };
+        const data = JSON.parse(raw);
+        if (!data || data.date !== todayKey() || !Array.isArray(data.tasks)) {
+          return { date: todayKey(), tasks: [] };
+        }
+        return data;
+      } catch {
+        return { date: todayKey(), tasks: [] };
+      }
+    }
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      }[c]));
+    }
+
+    function subjectOf(id) {
+      return SUBJECTS.find(s => s.id === id) || SUBJECTS[5];
+    }
+
+    let state = loadState();
+    let currentSubject = state.tasks.length
+      ? (state.tasks[state.tasks.length-1].subject || "etc")
+      : "etc";
+
+    const dateEl       = document.getElementById("date");
+    const subjectsEl   = document.getElementById("subjects");
+    const listEl       = document.getElementById("list");
+    const emptyEl      = document.getElementById("empty");
+    const doneCountEl  = document.getElementById("done-count");
+    const totalCountEl = document.getElementById("total-count");
+    const fillEl       = document.getElementById("fill");
+    const barEl        = document.getElementById("bar");
+    const celebrateEl  = document.getElementById("celebrate");
+    const form         = document.getElementById("form");
+    const input        = document.getElementById("input");
+
+    dateEl.textContent = formatDate();
+
+    SUBJECTS.forEach(s => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "subject-pill" + (s.id === currentSubject ? " active" : "");
+      b.dataset.id = s.id;
+      b.setAttribute("role", "radio");
+      b.setAttribute("aria-checked", s.id === currentSubject ? "true" : "false");
+      b.style.setProperty("--c", s.color);
+      b.innerHTML = `<span class="dot"></span>${s.name}`;
+      b.addEventListener("click", () => {
+        currentSubject = s.id;
+        document.querySelectorAll(".subject-pill").forEach(p => {
+          const on = p.dataset.id === s.id;
+          p.classList.toggle("active", on);
+          p.setAttribute("aria-checked", on ? "true" : "false");
+        });
+      });
+      subjectsEl.appendChild(b);
+    });
+
+    function render() {
+      listEl.innerHTML = "";
+      state.tasks.forEach(t => {
+        const subj = subjectOf(t.subject);
+        const li = document.createElement("li");
+        li.className = "task" + (t.done ? " done" : "");
+        li.style.setProperty("--c", subj.color);
+        li.innerHTML = `
+          <div class="checkbox" role="checkbox" aria-checked="${t.done}" tabindex="0" aria-label="${escapeHtml(t.text)}">
+            <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>
+          </div>
+          <div class="task-text"><span class="subj-tag" style="--c:${subj.color}">${subj.name}</span><span class="label">${escapeHtml(t.text)}</span></div>
+          <button class="del" type="button" aria-label="삭제">×</button>
+        `;
+        const toggleFn = () => toggle(t.id);
+        li.querySelector(".checkbox").addEventListener("click", e => { e.stopPropagation(); toggleFn(); });
+        li.querySelector(".task-text").addEventListener("click", toggleFn);
+        li.querySelector(".del").addEventListener("click", e => { e.stopPropagation(); remove(t.id); });
+        listEl.appendChild(li);
+      });
+
+      const total = state.tasks.length;
+      const done  = state.tasks.filter(t => t.done).length;
+      doneCountEl.textContent  = done;
+      totalCountEl.textContent = total;
+      const pct = total ? (done / total) * 100 : 0;
+      fillEl.style.width = pct + "%";
+      barEl.setAttribute("aria-valuenow", String(Math.round(pct)));
+
+      emptyEl.hidden = total > 0;
+
+      const allDone = total > 0 && done === total;
+      celebrateEl.classList.toggle("show", allDone);
+      celebrateEl.setAttribute("aria-hidden", allDone ? "false" : "true");
+    }
+
+    function add(text) {
+      state.tasks.push({
+        id: Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+        text,
+        subject: currentSubject,
+        done: false,
+        createdAt: Date.now()
+      });
+      save();
+      render();
+    }
+
+    function toggle(id) {
+      const t = state.tasks.find(x => x.id === id);
+      if (!t) return;
+      t.done = !t.done;
+      save();
+      render();
+    }
+
+    function remove(id) {
+      state.tasks = state.tasks.filter(x => x.id !== id);
+      save();
+      render();
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      add(text);
+      input.value = "";
+      input.focus();
+    });
+
+    function checkDateChange() {
+      if (state.date !== todayKey()) {
+        state = { date: todayKey(), tasks: [] };
+        save();
+        dateEl.textContent = formatDate();
+        render();
+      }
+    }
+    setInterval(checkDateChange, 30 * 1000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) checkDateChange();
+    });
+
+    render();
+  </script>
+</body>
+</html>

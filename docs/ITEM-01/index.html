@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#f3ecdc">
+<title>수행평가 마감 알리미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3ecdc;
+    --paper-soft: #fffbf0;
+    --ink: #2a2620;
+    --ink-soft: #6b6358;
+    --ink-fade: #b3a994;
+    --rule: rgba(140, 100, 70, 0.10);
+
+    --note-yellow: #fff39a;
+    --note-pink:   #ffc1c1;
+    --note-mint:   #b6f0c8;
+    --note-sky:    #b9dcff;
+    --tape:        rgba(255, 230, 120, 0.78);
+    --urgent:      #ff5050;
+    --warn:        #ffb442;
+    --safe:        #4dba73;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(255, 200, 110, 0.12) 0, transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(255, 120, 100, 0.08) 0, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 22px calc(120px + env(safe-area-inset-bottom));
+  }
+
+  header { margin-bottom: 22px; }
+
+  .badge-stamp {
+    display: inline-block;
+    font-family: "Jua", "Gaegu", sans-serif;
+    font-size: 14px;
+    color: var(--urgent);
+    border: 2.5px solid var(--urgent);
+    padding: 3px 10px 2px;
+    border-radius: 8px;
+    transform: rotate(-3deg);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .title {
+    font-family: "Jua", sans-serif;
+    font-size: 42px;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    position: relative;
+    display: inline-block;
+  }
+  .title .accent { color: var(--urgent); }
+  .title::after {
+    content: "";
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    bottom: 4px;
+    height: 14px;
+    background: var(--note-yellow);
+    z-index: -1;
+    opacity: 0.85;
+    transform: skewX(-4deg);
+    border-radius: 2px;
+  }
+
+  .subtitle {
+    font-family: "Gaegu", sans-serif;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin: 8px 0 0;
+    letter-spacing: -0.4px;
+  }
+
+  .summary {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+  }
+  .summary-pill {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    background: var(--paper-soft);
+    box-shadow: 3px 3px 0 0 var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+  }
+  .summary-pill .num {
+    font-family: "Jua", sans-serif;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+  }
+  .summary-pill .label {
+    font-family: "Gaegu", sans-serif;
+    font-size: 14px;
+    margin-top: 4px;
+    color: var(--ink-soft);
+  }
+  .summary-pill.urgent .num { color: var(--urgent); }
+  .summary-pill.warn .num   { color: var(--warn); }
+  .summary-pill.safe .num   { color: var(--safe); }
+
+  .input-card {
+    margin-top: 24px;
+    padding: 16px 16px 14px;
+    background: var(--paper-soft);
+    border: 2px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 0 var(--ink);
+    position: relative;
+  }
+  .input-card::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    width: 78px;
+    height: 18px;
+    background: var(--tape);
+    transform: rotate(-3deg);
+    border-radius: 1px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  }
+
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field-input {
+    width: 100%;
+    height: 50px;
+    border: 1.5px dashed var(--ink-fade);
+    background: transparent;
+    font-family: "Gowun Dodum", sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    padding: 0 14px;
+    outline: none;
+    border-radius: 12px;
+  }
+  .field-input:focus { border-color: var(--ink); border-style: solid; }
+  .field-input::placeholder { color: var(--ink-fade); }
+
+  .field-input[type="date"] {
+    font-family: "Gaegu", sans-serif;
+    font-size: 18px;
+  }
+
+  .add-btn {
+    height: 52px;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "Jua", sans-serif;
+    font-size: 22px;
+    border-radius: 14px;
+    cursor: pointer;
+    padding: 0 18px;
+    transition: transform 80ms ease;
+    letter-spacing: -0.5px;
+  }
+  .add-btn:active { transform: translateY(2px) scale(0.98); }
+
+  .list {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 48px 16px 32px;
+    color: var(--ink-fade);
+    font-family: "Gaegu", sans-serif;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+  }
+
+  .note {
+    position: relative;
+    padding: 18px 18px 16px;
+    background: var(--note-yellow);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 0 var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    transform-origin: center;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .note:nth-child(4n+1) { background: var(--note-yellow); transform: rotate(-0.6deg); }
+  .note:nth-child(4n+2) { background: var(--note-pink);   transform: rotate(0.5deg); }
+  .note:nth-child(4n+3) { background: var(--note-mint);   transform: rotate(-0.4deg); }
+  .note:nth-child(4n+4) { background: var(--note-sky);    transform: rotate(0.7deg); }
+
+  .note::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 70px;
+    height: 16px;
+    background: var(--tape);
+    border-radius: 1px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.07);
+  }
+
+  .check {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border: 2.5px solid var(--ink);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-soft);
+    cursor: pointer;
+    transition: background 180ms ease, transform 120ms ease;
+  }
+  .check svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--ink);
+    stroke-width: 3.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    transition: stroke-dashoffset 280ms ease 60ms;
+  }
+  .note.done .check { background: var(--ink); }
+  .note.done .check svg { stroke: var(--paper); stroke-dashoffset: 0; }
+
+  .body {
+    flex: 1;
+    min-width: 0;
+  }
+  .body .title-text {
+    font-family: "Gaegu", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    transition: text-decoration-color 220ms ease;
+    text-decoration: line-through transparent;
+    text-decoration-thickness: 2px;
+  }
+  .note.done .title-text {
+    text-decoration-color: var(--ink-soft);
+    color: var(--ink-soft);
+  }
+  .body .date {
+    font-family: "Gowun Dodum", sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    letter-spacing: -0.2px;
+  }
+
+  .dday {
+    flex: 0 0 auto;
+    font-family: "Jua", sans-serif;
+    font-size: 26px;
+    color: var(--ink);
+    border: 2.5px solid var(--ink);
+    background: var(--paper-soft);
+    border-radius: 12px;
+    padding: 6px 10px 4px;
+    line-height: 1;
+    min-width: 64px;
+    text-align: center;
+    transform: rotate(-3deg);
+    letter-spacing: -0.5px;
+  }
+  .note.urgent .dday { color: var(--urgent); border-color: var(--urgent); }
+  .note.warn   .dday { color: #b76a00;       border-color: #b76a00; }
+  .note.past   .dday { color: var(--ink-fade); border-color: var(--ink-fade); font-size: 18px; padding-top: 9px; }
+  .note.done   .dday { opacity: 0.5; }
+
+  .del {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0.45;
+    transition: opacity 120ms;
+    font-family: "Gowun Dodum", sans-serif;
+  }
+  .del:hover { opacity: 1; }
+
+  .footer-note {
+    margin-top: 40px;
+    text-align: center;
+    font-family: "Gaegu", sans-serif;
+    font-size: 16px;
+    color: var(--ink-fade);
+    letter-spacing: -0.3px;
+  }
+
+  @media (max-width: 380px) {
+    .wrap { padding: 22px 16px calc(120px + env(safe-area-inset-bottom)); }
+    .title { font-size: 36px; }
+    .body .title-text { font-size: 20px; }
+    .dday { font-size: 22px; min-width: 56px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="badge-stamp">DEADLINE</span>
+    <h1 class="title">수행평가 <span class="accent">마감</span></h1>
+    <p class="subtitle">남은 날짜를 한눈에 ✏️</p>
+
+    <div class="summary">
+      <div class="summary-pill urgent">
+        <span class="num" id="cnt-urgent">0</span>
+        <span class="label">급해요!</span>
+      </div>
+      <div class="summary-pill warn">
+        <span class="num" id="cnt-warn">0</span>
+        <span class="label">곧 마감</span>
+      </div>
+      <div class="summary-pill safe">
+        <span class="num" id="cnt-safe">0</span>
+        <span class="label">여유</span>
+      </div>
+    </div>
+  </header>
+
+  <form class="input-card" id="form" autocomplete="off">
+    <div class="input-row">
+      <input class="field-input" id="title" type="text" placeholder="과제 이름 (예: 국어 발표 자료)" maxlength="80" required>
+      <input class="field-input" id="due" type="date" required>
+      <button class="add-btn" type="submit">＋ 추가하기</button>
+    </div>
+  </form>
+
+  <div class="list" id="list"></div>
+  <div class="empty" id="empty" hidden>아직 등록된 과제가 없어요 🌱<br>위에서 첫 과제를 추가해 보자</div>
+
+  <div class="footer-note">완료하면 체크박스를 톡 눌러줘</div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'homework-deadlines-v2';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch { return []; }
+  }
+  function save(items) { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+
+  function todayMidnight() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  function daysUntil(dueStr) {
+    const due = new Date(dueStr + 'T00:00:00');
+    return Math.round((due.getTime() - todayMidnight().getTime()) / 86400000);
+  }
+  function ddayLabel(days) {
+    if (days === 0) return 'D-DAY';
+    if (days > 0)   return 'D-' + days;
+    return '지남';
+  }
+  function formatDate(dueStr) {
+    const [y, m, d] = dueStr.split('-');
+    return `${y}.${m}.${d}`;
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  const $list = document.getElementById('list');
+  const $empty = document.getElementById('empty');
+  const $cntUrgent = document.getElementById('cnt-urgent');
+  const $cntWarn   = document.getElementById('cnt-warn');
+  const $cntSafe   = document.getElementById('cnt-safe');
+
+  function render() {
+    const items = load();
+    items.sort((a, b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return a.due.localeCompare(b.due);
+    });
+
+    let cu = 0, cw = 0, cs = 0;
+    items.forEach(it => {
+      if (it.done) return;
+      const d = daysUntil(it.due);
+      if (d < 0) return;
+      if (d <= 3) cu++;
+      else if (d <= 7) cw++;
+      else cs++;
+    });
+    $cntUrgent.textContent = cu;
+    $cntWarn.textContent = cw;
+    $cntSafe.textContent = cs;
+
+    $list.innerHTML = '';
+    $empty.hidden = items.length > 0;
+    if (items.length === 0) return;
+
+    for (const item of items) {
+      const days = daysUntil(item.due);
+      const note = document.createElement('div');
+      note.className = 'note';
+      if (!item.done) {
+        if (days < 0)            note.classList.add('past');
+        else if (days <= 3)      note.classList.add('urgent');
+        else if (days <= 7)      note.classList.add('warn');
+      } else {
+        note.classList.add('done');
+      }
+
+      note.innerHTML = `
+        <div class="check" data-id="${item.id}" role="checkbox" aria-checked="${item.done}" tabindex="0" aria-label="완료 표시">
+          <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>
+        </div>
+        <div class="body">
+          <div class="title-text"></div>
+          <div class="date">${formatDate(item.due)}</div>
+        </div>
+        <div class="dday">${ddayLabel(days)}</div>
+        <button class="del" type="button" data-id="${item.id}" aria-label="삭제">×</button>
+      `;
+      note.querySelector('.title-text').textContent = item.title;
+      $list.appendChild(note);
+    }
+  }
+
+  document.getElementById('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const titleEl = document.getElementById('title');
+    const dueEl = document.getElementById('due');
+    const title = titleEl.value.trim();
+    const due = dueEl.value;
+    if (!title || !due) return;
+
+    const items = load();
+    items.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title, due, done: false,
+    });
+    save(items);
+    titleEl.value = '';
+    dueEl.value = '';
+    titleEl.focus();
+    render();
+  });
+
+  $list.addEventListener('click', (e) => {
+    const check = e.target.closest('.check');
+    if (check) {
+      const id = check.dataset.id;
+      const items = load();
+      const it = items.find(x => x.id === id);
+      if (it) { it.done = !it.done; save(items); render(); }
+      return;
+    }
+    const del = e.target.closest('.del');
+    if (del) {
+      const id = del.dataset.id;
+      if (!confirm('이 과제를 삭제할까요?')) return;
+      save(load().filter(x => x.id !== id));
+      render();
+    }
+  });
+
+  render();
+  setInterval(render, 60 * 1000);
+</script>
+</body>
+</html>
