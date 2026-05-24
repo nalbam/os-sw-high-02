@@ -2,521 +2,761 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
-<meta name="theme-color" content="#e8d9b8" />
-<title>공지 모아보기</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>우리반 알림판 📌</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper:       #e8d9b8;
-    --paper-soft:  #fffbf0;
-    --ink:         #2a2620;
-    --ink-soft:    #6b6358;
-    --ink-fade:    #b3a994;
-
-    --note-yellow: #fff39a;
-    --note-pink:   #ffc1c1;
-    --note-mint:   #b6f0c8;
-    --note-sky:    #b9dcff;
-    --note-peach:  #ffd6a5;
-
-    --important:   #e94444;
-    --normal:      #2563eb;
-    --low:         #8a8475;
-
-    --pin-red:     #e94444;
-    --pin-blue:    #2563eb;
-    --pin-green:   #3aaa6b;
-    --tape:        rgba(255, 230, 120, 0.78);
+    --cork: #c9974f;
+    --cork-dark: #a87a36;
+    --cork-darker: #8a6224;
+    --paper: #fffceb;
+    --paper-shadow: rgba(60, 40, 10, 0.25);
+    --ink: #3a2a14;
+    --ink-soft: #6b563a;
+    --red: #e63946;
+    --red-soft: #ffe2e4;
+    --blue: #4a8fbf;
+    --yellow: #ffe478;
+    --pink: #ffc7d4;
+    --mint: #c7f0d4;
+    --lilac: #d8c7f0;
+    --pin-red: #d62a35;
+    --pin-blue: #2a72d6;
+    --pin-yellow: #f4b400;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; }
 
   html, body {
-    background: var(--paper);
+    margin: 0;
+    padding: 0;
+    font-family: 'Gaegu', 'Nanum Pen Script', system-ui, sans-serif;
     color: var(--ink);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
     min-height: 100vh;
-    min-height: 100dvh;
-    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
-    font-size: 17px;
-    line-height: 1.55;
-    overscroll-behavior-y: contain;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,0.18), transparent 35%),
+      radial-gradient(circle at 82% 78%, rgba(0,0,0,0.15), transparent 40%),
+      repeating-radial-gradient(circle at 30% 40%, #b88846 0, #b88846 2px, #c9974f 2px, #c9974f 5px),
+      var(--cork);
+    background-blend-mode: normal, normal, multiply, normal;
+    padding: 16px;
+    padding-bottom: 100px;
   }
 
-  /* 코르크 보드 텍스처 */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 25% 25%, rgba(120, 80, 40, 0.07) 0, transparent 30%),
-      radial-gradient(circle at 75% 75%, rgba(120, 80, 40, 0.06) 0, transparent 30%),
-      radial-gradient(circle at 50% 50%, rgba(80, 60, 30, 0.04) 0, transparent 35%);
-    background-size: 80px 80px, 120px 120px, 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-  }
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 14% 18%, rgba(255, 200, 110, 0.12) 0, transparent 45%),
-      radial-gradient(circle at 86% 80%, rgba(200, 130, 70, 0.08) 0, transparent 50%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .container {
-    position: relative;
-    z-index: 2;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 28px 22px calc(120px + env(safe-area-inset-bottom));
-  }
-
-  header {
+  /* ===== Header ===== */
+  .topbar {
+    max-width: 720px;
+    margin: 0 auto 18px;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 22px;
-    gap: 14px;
+    gap: 12px;
+    padding: 10px 6px;
   }
-  .header-left {
-    flex: 1;
-    min-width: 0;
-  }
-  .badge-stamp {
-    display: inline-block;
-    font-family: "Jua", "Gaegu", sans-serif;
-    font-size: 14px;
-    color: var(--important);
-    border: 2.5px solid var(--important);
-    padding: 3px 10px 2px;
-    border-radius: 8px;
-    transform: rotate(-2deg);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-  .title {
-    font-family: "Jua", sans-serif;
-    font-size: 40px;
-    color: var(--ink);
-    margin: 0;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
-    position: relative;
-    display: inline-block;
-  }
-  .title::after {
-    content: "";
-    position: absolute;
-    left: -4px;
-    right: -4px;
-    bottom: 4px;
-    height: 14px;
-    background: var(--note-pink);
-    z-index: -1;
-    opacity: 0.85;
-    transform: skewX(-4deg);
-    border-radius: 2px;
-  }
-  .count {
-    font-family: "Jua", sans-serif;
-    font-size: 14px;
-    color: var(--paper-soft);
-    background: var(--ink);
-    padding: 6px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
-    letter-spacing: -0.3px;
-  }
-  .count.zero { background: var(--ink-fade); }
 
-  /* 추가 폼 — 종이 카드 */
-  .form {
-    margin-bottom: 28px;
-    padding: 18px 18px 16px;
-    background: var(--paper-soft);
-    border: 2px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 5px 5px 0 0 var(--ink);
-    position: relative;
+  .brand {
+    font-family: 'Jua', sans-serif;
+    color: #fff8e0;
+    text-shadow: 2px 2px 0 rgba(80,50,10,0.5), 0 4px 12px rgba(0,0,0,0.25);
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: 0.5px;
   }
-  .form::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-2deg);
-    width: 70px;
-    height: 16px;
-    background: var(--tape);
-    border-radius: 1px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
-  }
-  .form-title {
-    font-family: "Jua", sans-serif;
+  .brand .emoji { display: inline-block; transform: rotate(-12deg); margin-right: 4px;}
+
+  .meta {
+    font-family: 'Nanum Pen Script', cursive;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
     font-size: 22px;
-    margin: 0 0 12px;
-    letter-spacing: -0.5px;
+    text-align: right;
+    line-height: 1.1;
   }
-  .form > .field + .field { margin-top: 10px; }
-
-  .field-input,
-  .field-select {
-    width: 100%;
-    height: 50px;
-    border: 1.5px dashed var(--ink-fade);
-    background: transparent;
-    font-family: "Gowun Dodum", sans-serif;
+  .meta small {
+    display: block;
+    opacity: 0.85;
     font-size: 16px;
-    color: var(--ink);
-    padding: 0 14px;
-    outline: none;
-    border-radius: 12px;
   }
-  .field-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b6358' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
-    font-family: "Gaegu", sans-serif;
+
+  /* ===== Form card (paper note) ===== */
+  .form-card {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto 24px;
+    background:
+      linear-gradient(180deg, #fffef2 0%, #fffceb 100%);
+    border-radius: 4px;
+    padding: 22px 20px 18px;
+    box-shadow:
+      0 2px 0 rgba(0,0,0,0.05),
+      0 12px 22px -8px rgba(40,20,0,0.45),
+      0 22px 40px -20px rgba(0,0,0,0.4);
+    transform: rotate(-0.6deg);
+    background-image:
+      linear-gradient(transparent 31px, #d9c89a 32px),
+      linear-gradient(90deg, #ffd6d6 0, #ffd6d6 32px, transparent 33px);
+    background-size: 100% 32px, 100% 100%;
+    background-position: 0 18px, 0 0;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: -14px; left: 50%;
+    width: 22px; height: 22px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle at 35% 30%, #ff8d96 0%, var(--pin-red) 55%, #8a141c 100%);
+    border-radius: 50%;
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.35),
+      inset -2px -3px 4px rgba(0,0,0,0.3),
+      inset 2px 2px 3px rgba(255,255,255,0.5);
+    z-index: 3;
+  }
+
+  .form-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    margin: 0 0 12px 36px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field {
+    margin: 0 0 10px 36px;
+  }
+  .field label {
+    display: block;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 2px;
+    font-family: 'Gaegu', sans-serif;
+    font-weight: 700;
+  }
+
+  .field input[type="text"] {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'Gaegu', sans-serif;
+    font-size: 20px;
+    color: var(--ink);
+    padding: 4px 2px;
+    outline: none;
+    border-bottom: 1px dashed transparent;
+    min-height: 40px;
+  }
+  .field input[type="text"]:focus {
+    border-bottom-color: var(--blue);
+  }
+  .field input[type="text"]::placeholder {
+    color: #c2a988;
+    font-style: italic;
+  }
+
+  .priority-row {
+    display: flex;
+    gap: 8px;
+    margin: 4px 0 14px 36px;
+    flex-wrap: wrap;
+  }
+  .pchip {
+    flex: 1 1 auto;
+    min-width: 90px;
+    min-height: 44px;
+    border: 2px dashed #c9b896;
+    background: rgba(255,255,255,0.55);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-family: 'Gaegu', sans-serif;
     font-size: 18px;
     font-weight: 700;
-  }
-  .field-input:focus,
-  .field-select:focus { border-color: var(--ink); border-style: solid; }
-  .field-input::placeholder { color: var(--ink-fade); }
-
-  .add-btn {
-    width: 100%;
-    height: 54px;
-    border: 2px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper-soft);
-    font-family: "Jua", sans-serif;
-    font-size: 22px;
-    border-radius: 14px;
+    color: var(--ink-soft);
     cursor: pointer;
-    margin-top: 12px;
-    transition: transform 80ms ease;
-    letter-spacing: -0.5px;
-  }
-  .add-btn:active { transform: translateY(2px) scale(0.99); }
-
-  /* 공지 카드 */
-  .list {
+    transition: all 0.15s ease;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .pchip:hover { transform: translateY(-1px); }
+  .pchip[data-active="true"][data-val="low"] {
+    background: var(--mint);
+    border-color: #6cbf86;
+    color: #1f5e35;
+    border-style: solid;
+  }
+  .pchip[data-active="true"][data-val="normal"] {
+    background: var(--yellow);
+    border-color: #d9a72c;
+    color: #6b4a00;
+    border-style: solid;
+  }
+  .pchip[data-active="true"][data-val="high"] {
+    background: var(--red);
+    border-color: #a51420;
+    color: #fff;
+    border-style: solid;
+    box-shadow: 0 2px 0 #a51420, 0 4px 12px rgba(230,57,70,0.4);
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+  .btn-add {
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    background: #2f8f4f;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    cursor: pointer;
+    min-height: 44px;
+    box-shadow: 0 3px 0 #1f6938, 0 6px 14px rgba(0,0,0,0.2);
+    transition: transform 0.1s ease;
+  }
+  .btn-add:hover { transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(2px); box-shadow: 0 1px 0 #1f6938; }
+
+  /* ===== Board / List ===== */
+  .board {
+    max-width: 720px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 18px;
   }
+  @media (min-width: 560px) {
+    .board { grid-template-columns: 1fr 1fr; gap: 22px; }
+  }
 
-  .empty {
-    text-align: center;
-    color: var(--ink-fade);
-    padding: 56px 16px;
-    font-family: "Gaegu", sans-serif;
+  .board-header {
+    grid-column: 1 / -1;
+    font-family: 'Jua', sans-serif;
+    color: #fff8e0;
+    text-shadow: 1px 1px 0 rgba(60,40,10,0.55);
     font-size: 22px;
-    line-height: 1.5;
-    letter-spacing: -0.4px;
+    margin: 6px 4px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
-  .empty strong {
-    color: var(--ink-soft);
-    font-weight: 700;
+  .board-header .count {
+    font-family: 'Gaegu', sans-serif;
+    font-size: 16px;
+    background: rgba(0,0,0,0.25);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 999px;
   }
 
-  .card {
+  /* sticky note */
+  .note {
     position: relative;
-    padding: 22px 20px 18px;
-    background: var(--note-yellow);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    box-shadow: 4px 4px 0 0 var(--ink);
+    padding: 26px 18px 18px;
+    border-radius: 4px;
+    min-height: 140px;
     cursor: pointer;
-    transition: transform 0.08s, opacity 0.2s;
-    animation: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    box-shadow:
+      0 1px 0 rgba(0,0,0,0.06),
+      0 14px 22px -10px rgba(40,20,0,0.55),
+      0 20px 40px -16px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease, filter 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
   }
-  @keyframes pop {
-    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  .card:active { transform: scale(0.99); }
+  .note:hover { transform: translateY(-2px) rotate(0deg); }
+  .note:active { transform: scale(0.985); }
 
-  .card:nth-child(5n+1) { background: var(--note-yellow); transform: rotate(-0.5deg); }
-  .card:nth-child(5n+2) { background: var(--note-mint);   transform: rotate(0.6deg); }
-  .card:nth-child(5n+3) { background: var(--note-sky);    transform: rotate(-0.4deg); }
-  .card:nth-child(5n+4) { background: var(--note-peach);  transform: rotate(0.5deg); }
-  .card:nth-child(5n+5) { background: var(--note-pink);   transform: rotate(-0.6deg); }
-
-  /* 압정 */
-  .card::before {
-    content: "";
+  /* pin */
+  .note::before {
+    content: '';
     position: absolute;
-    top: -8px;
-    left: 50%;
+    top: -10px; left: 50%;
+    width: 18px; height: 18px;
     transform: translateX(-50%);
-    width: 18px;
-    height: 18px;
-    background: radial-gradient(circle at 35% 35%, #fff8 0 18%, transparent 20%), var(--pin-color, var(--pin-red));
     border-radius: 50%;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.25), inset -1px -1px 2px rgba(0,0,0,0.2);
+    box-shadow:
+      0 3px 6px rgba(0,0,0,0.35),
+      inset -2px -3px 3px rgba(0,0,0,0.3),
+      inset 2px 2px 3px rgba(255,255,255,0.55);
     z-index: 2;
   }
-  .card.priority-important { --pin-color: var(--pin-red); }
-  .card.priority-normal    { --pin-color: var(--pin-blue); }
-  .card.priority-low       { --pin-color: var(--pin-green); }
 
-  .card.important {
-    border-color: var(--important);
-    border-width: 2.5px;
-  }
-  .card.important::after {
-    content: "중요";
-    position: absolute;
-    top: 8px;
-    right: -6px;
-    font-family: "Jua", sans-serif;
-    font-size: 12px;
-    background: var(--important);
-    color: white;
-    padding: 3px 10px 2px;
-    border-radius: 4px 0 0 4px;
-    letter-spacing: 1px;
-    transform: rotate(0deg);
-    box-shadow: -1px 2px 0 rgba(0,0,0,0.15);
-  }
-
-  .card .title-text {
-    font-family: "Jua", sans-serif;
-    font-size: 22px;
-    font-weight: 400;
-    margin: 0 0 6px;
-    letter-spacing: -0.5px;
-    color: var(--ink);
-    word-break: keep-all;
-    overflow-wrap: anywhere;
+  .note .title {
+    font-family: 'Jua', sans-serif;
+    font-size: 19px;
     line-height: 1.25;
-  }
-  .card .content {
-    font-family: "Gowun Dodum", sans-serif;
-    font-size: 15px;
+    margin: 0 0 8px;
     color: var(--ink);
-    word-break: keep-all;
-    overflow-wrap: anywhere;
-    line-height: 1.55;
+    word-break: break-word;
   }
-  .card .meta {
+  .note .body {
+    font-family: 'Gaegu', sans-serif;
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--ink);
+    word-break: break-word;
+    margin-bottom: 8px;
+  }
+  .note .foot {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1.5px dashed rgba(42, 38, 32, 0.2);
-    font-family: "Gaegu", sans-serif;
-    font-size: 15px;
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 17px;
     color: var(--ink-soft);
-    letter-spacing: -0.3px;
+    margin-top: auto;
   }
-  .card .check {
-    font-family: "Jua", sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    background: rgba(255, 255, 255, 0.5);
-    padding: 3px 10px 2px;
-    border: 1.5px solid var(--ink);
+  .note .stamp {
+    font-family: 'Jua', sans-serif;
+    font-size: 13px;
+    padding: 2px 8px;
     border-radius: 999px;
-    letter-spacing: -0.3px;
+    background: rgba(255,255,255,0.6);
+    color: var(--ink-soft);
+    border: 1px dashed #b9a37a;
   }
 
-  /* 읽음 */
-  .card.read { opacity: 0.55; }
-  .card.read .title-text { font-weight: 400; }
-  .card.read .check {
-    background: var(--ink);
-    color: var(--paper-soft);
-  }
-
-  /* 7일 지남 */
-  .card.stale { opacity: 0.4; filter: grayscale(0.6); }
-  .card.read.stale { opacity: 0.28; }
-
-  .footer-note {
-    margin-top: 40px;
-    text-align: center;
-    font-family: "Gaegu", sans-serif;
+  .delete-btn {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.08);
+    color: var(--ink-soft);
     font-size: 16px;
-    color: var(--ink-fade);
-    letter-spacing: -0.3px;
+    font-family: 'Jua', sans-serif;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    z-index: 4;
+  }
+  .note:hover .delete-btn,
+  .note:focus-within .delete-btn { opacity: 1; }
+  .delete-btn:hover { background: rgba(230,57,70,0.8); color: #fff; }
+
+  /* sticky note colors + slight rotations */
+  .note.color-0 { background: var(--yellow); transform: rotate(-1.2deg); }
+  .note.color-0::before { background: radial-gradient(circle at 35% 30%, #ffd57a, #f4b400 55%, #7a5d00 100%); }
+  .note.color-1 { background: var(--pink); transform: rotate(1deg); }
+  .note.color-1::before { background: radial-gradient(circle at 35% 30%, #6db8ff, var(--pin-blue) 55%, #133e7a 100%); }
+  .note.color-2 { background: var(--mint); transform: rotate(-0.4deg); }
+  .note.color-2::before { background: radial-gradient(circle at 35% 30%, #7ed799, #2f8f4f 55%, #144d24 100%); }
+  .note.color-3 { background: var(--lilac); transform: rotate(0.8deg); }
+  .note.color-3::before { background: radial-gradient(circle at 35% 30%, #ffb1ff, #aa4cc7 55%, #4a1c5c 100%); }
+  .note.color-4 { background: #ffe1b3; transform: rotate(-0.8deg); }
+  .note.color-4::before { background: radial-gradient(circle at 35% 30%, #ff8d96, var(--pin-red) 55%, #8a141c 100%); }
+
+  /* unread = bold, read = faded */
+  .note[data-read="false"] .title,
+  .note[data-read="false"] .body { font-weight: 700; }
+  .note[data-read="true"] {
+    filter: saturate(0.7);
+    opacity: 0.78;
+  }
+  .note[data-read="true"] .title,
+  .note[data-read="true"] .body { font-weight: 400; color: #6b563a; }
+
+  /* priority HIGH: red ribbon + thick red border */
+  .note.priority-high {
+    border: 3px solid var(--red);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.3) inset,
+      0 14px 22px -10px rgba(40,20,0,0.55),
+      0 20px 40px -16px rgba(0,0,0,0.35),
+      0 0 22px rgba(230,57,70,0.35);
+  }
+  .note.priority-high .ribbon {
+    position: absolute;
+    top: 12px; left: -40px;
+    width: 160px;
+    text-align: center;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Jua', sans-serif;
+    font-size: 13px;
+    padding: 4px 0;
+    letter-spacing: 1px;
+    transform: rotate(-30deg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    z-index: 1;
   }
 
-  @media (max-width: 380px) {
-    .container { padding: 22px 16px calc(120px + env(safe-area-inset-bottom)); }
-    .title { font-size: 34px; }
-    .card .title-text { font-size: 20px; }
+  .note.priority-normal .badge-priority,
+  .note.priority-low .badge-priority {
+    display: inline-block;
+    font-family: 'Jua', sans-serif;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .priority-low .badge-priority { background: #6cbf86; color: #1f3e25; }
+  .priority-normal .badge-priority { background: #f4b400; color: #4a3000; }
+
+  /* stale (>7 days) */
+  .note.stale {
+    filter: grayscale(0.9) brightness(1.02);
+    opacity: 0.6;
+  }
+  .note.stale .ribbon { background: #8a8a8a; }
+  .note.stale::after {
+    content: '오래된 공지';
+    position: absolute;
+    bottom: 6px; right: 8px;
+    font-family: 'Jua', sans-serif;
+    font-size: 11px;
+    color: #555;
+    background: rgba(255,255,255,0.6);
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px dashed #888;
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #fff8e0;
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 24px;
+    padding: 40px 0;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+    opacity: 0.85;
+  }
+
+  .legend {
+    max-width: 720px;
+    margin: 22px auto 0;
+    text-align: center;
+    color: #fff8e0;
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 18px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+    opacity: 0.92;
+    line-height: 1.5;
+  }
+  .legend code {
+    background: rgba(0,0,0,0.25);
+    padding: 1px 8px;
+    border-radius: 6px;
+    font-family: 'Gaegu', sans-serif;
+    font-size: 16px;
+  }
+
+  /* push-pin entrance animation */
+  @keyframes pinDrop {
+    0% { transform: translateY(-60px) rotate(-8deg); opacity: 0; }
+    60% { transform: translateY(4px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  }
+  .note.new {
+    animation: pinDrop 0.45s ease-out;
   }
 </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="header-left">
-        <span class="badge-stamp">NOTICE</span>
-        <h1 class="title">공지 모아보기</h1>
-      </div>
-      <span class="count zero" id="count">—</span>
-    </header>
 
-    <form class="form" id="form" autocomplete="off">
-      <h2 class="form-title">＋ 공지 적기</h2>
-      <div class="field">
-        <input class="field-input" id="title" type="text" placeholder="제목 (예: 수학 수행평가 안내)" required maxlength="60" />
-      </div>
-      <div class="field">
-        <input class="field-input" id="content" type="text" placeholder="한 줄 내용" required maxlength="200" />
-      </div>
-      <div class="field">
-        <select class="field-select" id="priority">
-          <option value="low">낮음</option>
-          <option value="normal" selected>보통</option>
-          <option value="important">중요</option>
-        </select>
-      </div>
-      <button class="add-btn" type="submit">＋ 추가</button>
-    </form>
+  <div class="topbar">
+    <div class="brand">
+      <span class="emoji">📌</span>우리반 알림판
+    </div>
+    <div class="meta" id="todayMeta">
+      오늘
+      <small id="todayDate"></small>
+    </div>
+  </div>
 
-    <div class="list" id="list"></div>
+  <form class="form-card" id="addForm" autocomplete="off">
+    <div class="form-title">✏️ 새 공지 적기</div>
 
-    <div class="footer-note">카드를 톡 누르면 확인/취소 표시 ✏️</div>
+    <div class="field">
+      <label for="titleInput">제목</label>
+      <input id="titleInput" type="text" maxlength="60" placeholder="예) 내일 체육복 입고 등교!" required />
+    </div>
+
+    <div class="field">
+      <label for="bodyInput">한 줄 내용</label>
+      <input id="bodyInput" type="text" maxlength="120" placeholder="자세한 내용을 한 줄로 적어보자" required />
+    </div>
+
+    <div class="field" style="margin-bottom: 6px;">
+      <label>중요도</label>
+    </div>
+    <div class="priority-row" id="priorityRow">
+      <button type="button" class="pchip" data-val="low">🌱 낮음</button>
+      <button type="button" class="pchip" data-val="normal" data-active="true">📒 보통</button>
+      <button type="button" class="pchip" data-val="high">🚨 중요</button>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add">📍 붙이기</button>
+    </div>
+  </form>
+
+  <div class="board" id="board">
+    <div class="board-header">
+      🗂️ 붙어있는 공지 <span class="count" id="countBadge">0</span>
+    </div>
+    <!-- notes injected here -->
+  </div>
+
+  <div class="legend">
+    카드를 한 번 누르면 <code>확인함</code>, 다시 누르면 <code>안 본</code> 으로 돌아가요.<br>
+    7일 이상 지난 공지는 회색으로 흐려져요.
   </div>
 
 <script>
-  const STORAGE_KEY = 'notices_v2';
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'classboard_notices_v1';
   const STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
-  const $ = (id) => document.getElementById(id);
+  const $board = document.getElementById('board');
+  const $form = document.getElementById('addForm');
+  const $title = document.getElementById('titleInput');
+  const $body = document.getElementById('bodyInput');
+  const $priorityRow = document.getElementById('priorityRow');
+  const $count = document.getElementById('countBadge');
+  const $todayDate = document.getElementById('todayDate');
 
+  // ---- today label ----
+  const today = new Date();
+  const wd = ['일','월','화','수','목','금','토'][today.getDay()];
+  $todayDate.textContent =
+    `${today.getMonth()+1}월 ${today.getDate()}일 (${wd})`;
+
+  // ---- priority selector ----
+  let currentPriority = 'normal';
+  $priorityRow.addEventListener('click', (e) => {
+    const chip = e.target.closest('.pchip');
+    if (!chip) return;
+    currentPriority = chip.dataset.val;
+    [...$priorityRow.children].forEach(c => c.removeAttribute('data-active'));
+    chip.setAttribute('data-active', 'true');
+  });
+
+  // ---- storage ----
   function load() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-    catch { return []; }
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return null;
+      return parsed;
+    } catch { return null; }
   }
-  function save(notices) { localStorage.setItem(STORAGE_KEY, JSON.stringify(notices)); }
+  function save(notices) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notices)); }
+    catch (e) { console.warn('save failed', e); }
+  }
 
-  function relativeTime(ts) {
+  // ---- seed ----
+  function seed() {
+    const now = Date.now();
+    return [
+      {
+        id: 'n_' + (now - 1),
+        title: '내일 체육대회! 🏃',
+        body: '체육복 + 운동화 꼭 챙겨오세요. 8시 30분까지 운동장 집합!',
+        priority: 'high',
+        createdAt: now - (1 * 24 * 60 * 60 * 1000), // 1일 전
+        read: false,
+      },
+      {
+        id: 'n_' + (now - 2),
+        title: '수학 단원평가 안내',
+        body: '다음 주 화요일 3교시, 3단원까지 시험 봅니다.',
+        priority: 'normal',
+        createdAt: now - (3 * 24 * 60 * 60 * 1000), // 3일 전
+        read: false,
+      },
+      {
+        id: 'n_' + (now - 3),
+        title: '학급 문고 정리 도우미 모집',
+        body: '관심 있는 친구는 학급회장한테 말해줘 :)',
+        priority: 'low',
+        createdAt: now - (9 * 24 * 60 * 60 * 1000), // 9일 전 → stale
+        read: true,
+      },
+    ];
+  }
+
+  let notices = load();
+  if (!notices || notices.length === 0) {
+    notices = seed();
+    save(notices);
+  }
+
+  // ---- render ----
+  function timeAgo(ts) {
     const diff = Date.now() - ts;
-    const min = Math.floor(diff / 60000);
-    if (min < 1)  return '방금 전';
-    if (min < 60) return `${min}분 전`;
-    const hr = Math.floor(min / 60);
-    if (hr < 24)  return `${hr}시간 전`;
-    const day = Math.floor(hr / 24);
-    if (day < 7)  return `${day}일 전`;
-    const week = Math.floor(day / 7);
-    if (week < 5) return `${week}주 전`;
-    const month = Math.floor(day / 30);
-    return `${month}달 전`;
-  }
-  const isStale = (ts) => (Date.now() - ts) > STALE_MS;
-
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, (c) =>
-      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return '방금 전';
+    if (m < 60) return `${m}분 전`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}시간 전`;
+    const d = Math.floor(h / 24);
+    if (d < 7) return `${d}일 전`;
+    const dt = new Date(ts);
+    return `${dt.getMonth()+1}.${dt.getDate()}`;
   }
 
-  function render() {
-    const list = $('list');
-    const notices = load();
+  function priorityRank(p) {
+    return p === 'high' ? 0 : p === 'normal' ? 1 : 2;
+  }
 
-    const unread = notices.filter(n => !n.read).length;
-    const cnt = $('count');
-    if (notices.length === 0) {
-      cnt.textContent = '비어있음';
-      cnt.classList.add('zero');
-    } else if (unread > 0) {
-      cnt.textContent = `안 본 ${unread}개`;
-      cnt.classList.remove('zero');
-    } else {
-      cnt.textContent = `모두 확인 · ${notices.length}개`;
-      cnt.classList.add('zero');
-    }
-
-    if (notices.length === 0) {
-      list.innerHTML = `
-        <div class="empty">
-          <strong>아직 공지가 없어요 📭</strong><br>
-          위에서 첫 공지를 적어보자
-        </div>`;
-      return;
-    }
-
+  function render(animateId) {
+    // sort: high first, then newer first
     const sorted = [...notices].sort((a, b) => {
-      const ai = a.priority === 'important' ? 1 : 0;
-      const bi = b.priority === 'important' ? 1 : 0;
-      if (ai !== bi) return bi - ai;
+      const pr = priorityRank(a.priority) - priorityRank(b.priority);
+      if (pr !== 0) return pr;
       return b.createdAt - a.createdAt;
     });
 
-    list.innerHTML = sorted.map(n => {
-      const classes = [
-        'card',
-        `priority-${n.priority}`,
-        n.priority === 'important' ? 'important' : '',
-        n.read ? 'read' : '',
-        isStale(n.createdAt) ? 'stale' : ''
-      ].filter(Boolean).join(' ');
-      return `
-        <div class="${classes}" data-id="${n.id}">
-          <div class="title-text">${escapeHtml(n.title)}</div>
-          <div class="content">${escapeHtml(n.content)}</div>
-          <div class="meta">
-            <span>${relativeTime(n.createdAt)}</span>
-            <span class="check">${n.read ? '확인함 ✓' : '안 본 공지'}</span>
-          </div>
-        </div>`;
-    }).join('');
+    // clear (keep header)
+    [...$board.querySelectorAll('.note, .empty')].forEach(n => n.remove());
+
+    if (sorted.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = '아직 붙어있는 공지가 없어요 ✏️';
+      $board.appendChild(empty);
+      $count.textContent = '0';
+      return;
+    }
+
+    $count.textContent = String(sorted.length);
+
+    sorted.forEach((n, idx) => {
+      const stale = (Date.now() - n.createdAt) >= STALE_MS;
+      const card = document.createElement('div');
+      card.className = `note color-${idx % 5} priority-${n.priority}`;
+      if (stale) card.classList.add('stale');
+      if (n.id === animateId) card.classList.add('new');
+      card.dataset.id = n.id;
+      card.dataset.read = String(!!n.read);
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-pressed', String(!!n.read));
+
+      const delBtn = `<button class="delete-btn" aria-label="삭제" data-act="del">✕</button>`;
+
+      const ribbon = n.priority === 'high'
+        ? `<div class="ribbon">중요!</div>`
+        : '';
+
+      const priorityBadge = n.priority === 'high'
+        ? ''
+        : `<span class="badge-priority">${n.priority === 'normal' ? '보통' : '낮음'}</span><br>`;
+
+      const readStamp = n.read
+        ? `<span class="stamp">✓ 확인함</span>`
+        : `<span class="stamp" style="background:#fff0a8;border-style:solid;border-color:#d9a72c;color:#6b4a00;">● 안 봄</span>`;
+
+      card.innerHTML = `
+        ${delBtn}
+        ${ribbon}
+        ${priorityBadge}
+        <div class="title">${escapeHtml(n.title)}</div>
+        <div class="body">${escapeHtml(n.body)}</div>
+        <div class="foot">
+          <span>🕒 ${timeAgo(n.createdAt)}</span>
+          ${readStamp}
+        </div>
+      `;
+      $board.appendChild(card);
+    });
   }
 
-  $('form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = $('title').value.trim();
-    const content = $('content').value.trim();
-    const priority = $('priority').value;
-    if (!title || !content) return;
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
-    const notices = load();
-    notices.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      title, content, priority,
-      createdAt: Date.now(),
-      read: false
-    });
+  // ---- interactions ----
+  $board.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-act="del"]');
+    const card = e.target.closest('.note');
+    if (!card) return;
+
+    if (del) {
+      e.stopPropagation();
+      const id = card.dataset.id;
+      notices = notices.filter(n => n.id !== id);
+      save(notices);
+      render();
+      return;
+    }
+
+    // toggle read
+    const id = card.dataset.id;
+    const n = notices.find(x => x.id === id);
+    if (!n) return;
+    n.read = !n.read;
     save(notices);
-
-    e.target.reset();
-    $('priority').value = 'normal';
-    $('title').focus();
     render();
   });
 
-  $('list').addEventListener('click', (e) => {
-    const card = e.target.closest('.card');
+  $board.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const card = e.target.closest('.note');
     if (!card) return;
-    const id = card.dataset.id;
-    const notices = load();
-    const target = notices.find(n => n.id === id);
-    if (!target) return;
-    target.read = !target.read;
+    e.preventDefault();
+    card.click();
+  });
+
+  $form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = $title.value.trim();
+    const body = $body.value.trim();
+    if (!title || !body) return;
+
+    const newNotice = {
+      id: 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      title,
+      body,
+      priority: currentPriority,
+      createdAt: Date.now(),
+      read: false,
+    };
+    notices.push(newNotice);
     save(notices);
-    render();
+    $title.value = '';
+    $body.value = '';
+    // reset priority chip to 보통
+    currentPriority = 'normal';
+    [...$priorityRow.children].forEach(c => {
+      c.removeAttribute('data-active');
+      if (c.dataset.val === 'normal') c.setAttribute('data-active', 'true');
+    });
+    render(newNotice.id);
+    $title.focus();
   });
 
   render();
-  setInterval(render, 60000);
+})();
 </script>
 </body>
 </html>

@@ -1,30 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-<meta name="theme-color" content="#f3ecdc" />
-<title>오늘 어디 가야 하지?</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>오늘 어디 가야 하지? · 우리반 시간표</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #f3ecdc;
-    --paper-soft: #fffbf0;
-    --ink: #2a2620;
-    --ink-soft: #6b6358;
-    --ink-fade: #b3a994;
-
-    --c-mon: #ffc1c1;
-    --c-tue: #ffd6a5;
-    --c-wed: #fff39a;
-    --c-thu: #b6f0c8;
-    --c-fri: #b9dcff;
-    --c-sat: #d8c2ff;
-    --c-sun: #ffbde3;
-
-    --tape: rgba(255, 230, 120, 0.78);
+    --chalk-bg: #1f4a37;
+    --chalk-bg-2: #1a3d2d;
+    --chalk: #fefae0;
+    --chalk-soft: #e9edc9;
+    --chalk-pink: #ffc8dd;
+    --chalk-yellow: #ffe169;
+    --chalk-blue: #a2d2ff;
+    --paper: #fffaf0;
+    --paper-line: #d8e3f0;
+    --paper-margin: #ff6b6b;
+    --ink: #2b2d42;
+    --ink-soft: #6b7280;
+    --sticky-y: #fff3a3;
+    --sticky-p: #ffd1dc;
+    --sticky-b: #bde0fe;
+    --sticky-g: #c9f2c7;
+    --accent: #ef476f;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -32,719 +33,699 @@
   html, body {
     margin: 0;
     padding: 0;
-    background: var(--paper);
+    font-family: 'Gaegu', 'Nanum Pen Script', system-ui, sans-serif;
     color: var(--ink);
-    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
-    font-size: 17px;
-    line-height: 1.55;
+    background:
+      radial-gradient(ellipse at 20% 0%, #fde2a7 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, #c9f2c7 0%, transparent 55%),
+      #fff7e6;
     min-height: 100vh;
-    min-height: 100dvh;
-    overscroll-behavior-y: contain;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 12% 20%, rgba(255, 200, 110, 0.10) 0, transparent 45%),
-      radial-gradient(circle at 88% 75%, rgba(180, 200, 255, 0.10) 0, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   .wrap {
-    position: relative;
-    z-index: 2;
-    max-width: 520px;
+    max-width: 880px;
     margin: 0 auto;
-    padding: 28px 22px calc(120px + env(safe-area-inset-bottom));
+    padding: 18px 16px 80px;
   }
 
-  header { margin-bottom: 22px; }
-
-  .badge-stamp {
-    display: inline-block;
-    font-family: "Jua", "Gaegu", sans-serif;
-    font-size: 14px;
-    color: #2563eb;
-    border: 2.5px solid #2563eb;
-    padding: 3px 10px 2px;
-    border-radius: 8px;
-    transform: rotate(-2deg);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  .title {
-    font-family: "Jua", sans-serif;
-    font-size: 40px;
-    color: var(--ink);
-    margin: 0;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
-    position: relative;
-    display: inline-block;
-  }
-  .title::after {
-    content: "";
-    position: absolute;
-    left: -4px;
-    right: -4px;
-    bottom: 4px;
-    height: 14px;
-    background: var(--c-fri);
-    z-index: -1;
-    opacity: 0.85;
-    transform: skewX(-4deg);
-    border-radius: 2px;
-  }
-  .subtitle {
-    font-family: "Gaegu", sans-serif;
-    font-size: 19px;
-    color: var(--ink-soft);
-    margin: 8px 0 0;
-    letter-spacing: -0.4px;
-  }
-
-  /* 오늘 카드 */
-  .today-card {
-    margin-top: 22px;
-    padding: 22px 20px 20px;
-    background: var(--paper-soft);
-    border: 2px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 5px 5px 0 0 var(--ink);
-    text-align: center;
-    position: relative;
-  }
-  .today-card::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-2deg);
-    width: 80px;
-    height: 16px;
-    background: var(--tape);
-    border-radius: 1px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
-  }
-
-  .today-label {
-    font-family: "Gaegu", sans-serif;
-    font-size: 18px;
-    color: var(--ink-soft);
-    letter-spacing: -0.3px;
-  }
-  .today-name {
-    font-family: "Jua", sans-serif;
-    font-size: clamp(42px, 13vw, 60px);
-    letter-spacing: -1px;
-    line-height: 1;
-    margin: 4px 0;
-    color: var(--ink);
-  }
-  .today-name .day-color {
-    display: inline-block;
-    padding: 0 12px 2px;
-    border-radius: 10px;
-    background: var(--day-color, var(--c-wed));
-  }
-  .today-date {
-    font-family: "Gaegu", sans-serif;
-    font-size: 16px;
-    color: var(--ink-soft);
-    margin-top: 6px;
-  }
-
-  /* 카운트다운 - 큰 도장 */
-  .countdown {
-    margin-top: 16px;
-    padding: 14px 16px;
-    border: 2.5px dashed var(--ink);
-    border-radius: 14px;
-    background: var(--day-color, var(--c-wed));
-    position: relative;
-  }
-  .countdown.done { background: var(--c-thu); }
-  .countdown .label {
-    font-family: "Jua", sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    letter-spacing: 1px;
-  }
-  .countdown .value {
-    font-family: "Jua", sans-serif;
-    font-size: 26px;
-    color: var(--ink);
-    margin-top: 4px;
-    letter-spacing: -0.5px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
-  .countdown .target {
-    font-family: "Gaegu", sans-serif;
-    font-size: 15px;
-    color: var(--ink-soft);
-    margin-top: 4px;
-    letter-spacing: -0.2px;
-  }
-
-  /* 오늘 타임라인 */
-  .timeline {
-    list-style: none;
-    padding: 0;
-    margin: 18px 0 0;
+  /* ===== Header ===== */
+  header.top {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
   }
-  .timeline li {
+  .logo {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo .pin {
+    display: inline-block;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: inset -3px -4px 0 rgba(0,0,0,.15);
+    position: relative;
+  }
+  .logo .pin::after {
+    content: '';
+    position: absolute;
+    left: 9px; top: 8px;
+    width: 8px; height: 8px;
+    background: #fff8;
+    border-radius: 50%;
+  }
+  .date-stamp {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 20px;
+    color: var(--ink-soft);
+    transform: rotate(-2deg);
+    background: var(--sticky-y);
+    padding: 4px 12px;
+    border-radius: 4px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,.08);
+  }
+
+  /* ===== Blackboard (today's schedule) ===== */
+  .board {
+    background:
+      repeating-linear-gradient(180deg, transparent 0 30px, rgba(255,255,255,.02) 30px 31px),
+      linear-gradient(180deg, var(--chalk-bg) 0%, var(--chalk-bg-2) 100%);
+    border: 14px solid #8b5a2b;
+    border-radius: 10px;
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,.35),
+      0 8px 0 #6b4423,
+      0 14px 24px rgba(0,0,0,.18);
+    padding: 22px 20px 26px;
+    color: var(--chalk);
+    position: relative;
+    overflow: hidden;
+  }
+  .board::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 12% 88%, rgba(255,255,255,.06) 0 6px, transparent 8px),
+      radial-gradient(circle at 78% 14%, rgba(255,255,255,.05) 0 4px, transparent 6px),
+      radial-gradient(circle at 50% 95%, rgba(255,255,255,.04) 0 80px, transparent 120px);
+    pointer-events: none;
+  }
+  .board-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .board h1 {
+    font-family: 'Gaegu', cursive;
+    font-weight: 700;
+    font-size: 30px;
+    margin: 0;
+    color: var(--chalk);
+    text-shadow: 0 1px 0 rgba(0,0,0,.2);
+    letter-spacing: 1px;
+  }
+  .board h1 .accent {
+    color: var(--chalk-yellow);
+  }
+  .today-tag {
+    font-family: 'Jua', sans-serif;
+    background: rgba(255,255,255,.1);
+    border: 1.5px dashed rgba(255,255,255,.4);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--chalk-soft);
+  }
+
+  .countdown {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 12px 14px;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
+    background: rgba(255,255,255,.08);
     border-radius: 12px;
-    transition: opacity 0.2s ease;
-    position: relative;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border: 1.5px dashed rgba(255,255,255,.25);
   }
-  .timeline li.past { opacity: 0.4; }
-  .timeline li.next {
-    background: var(--day-color, var(--c-wed));
-    box-shadow: 2px 2px 0 0 var(--ink);
-    transform: translateX(2px);
+  .countdown .icon {
+    font-size: 30px;
+    line-height: 1;
   }
-  .timeline .time {
-    font-family: "Jua", sans-serif;
-    font-size: 22px;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-    min-width: 64px;
-    letter-spacing: -0.5px;
-  }
-  .timeline .name {
+  .countdown .text {
     flex: 1;
-    font-family: "Gaegu", sans-serif;
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--ink);
-    word-break: keep-all;
-    letter-spacing: -0.3px;
+    min-width: 0;
   }
-  .timeline .badge {
-    font-family: "Jua", sans-serif;
-    font-size: 13px;
-    background: var(--ink);
-    color: var(--paper-soft);
-    padding: 3px 9px 2px;
+  .countdown .label {
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
+    color: var(--chalk-soft);
+    opacity: .85;
+  }
+  .countdown .value {
+    font-family: 'Gaegu', cursive;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+    color: var(--chalk-yellow);
+    text-shadow: 0 0 14px rgba(255,225,105,.25);
+    word-break: keep-all;
+  }
+  .countdown.empty .value { color: var(--chalk-soft); font-size: 20px; }
+
+  .schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 92px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.06);
+    border-left: 4px solid var(--chalk-yellow);
+    transition: opacity .2s, transform .15s;
+  }
+  .item.past {
+    opacity: .35;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,255,255,.4);
+    border-left-color: rgba(255,255,255,.2);
+  }
+  .item.next {
+    background: rgba(255,225,105,.16);
+    border-left-color: var(--chalk-pink);
+    box-shadow: 0 0 0 1.5px rgba(255,200,221,.25) inset;
+  }
+  .item .time {
+    font-family: 'Jua', sans-serif;
+    font-size: 24px;
+    color: var(--chalk-yellow);
+    letter-spacing: 1px;
+  }
+  .item.past .time { color: var(--chalk-soft); }
+  .item .name {
+    font-family: 'Gaegu', cursive;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--chalk);
+    word-break: keep-all;
+  }
+  .item .badge {
+    font-family: 'Jua', sans-serif;
+    font-size: 12px;
+    background: var(--chalk-pink);
+    color: #6b2e3a;
+    padding: 3px 9px;
     border-radius: 999px;
-    letter-spacing: 0.5px;
   }
 
   .empty-today {
-    font-family: "Gaegu", sans-serif;
-    font-size: 22px;
-    color: var(--ink-soft);
-    padding: 24px 0 8px;
+    font-family: 'Gaegu', cursive;
+    font-size: 26px;
     text-align: center;
-    letter-spacing: -0.4px;
+    padding: 28px 10px;
+    color: var(--chalk-soft);
   }
+  .empty-today .big { font-size: 30px; color: var(--chalk-yellow); display: block; margin-bottom: 4px; }
 
-  /* 패널 (추가 폼 / 주간 일정) */
-  .panel {
-    margin-top: 22px;
-    padding: 18px 18px 16px;
-    background: var(--paper-soft);
-    border: 2px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 5px 5px 0 0 var(--ink);
+  /* ===== Paper note ===== */
+  .paper {
+    margin-top: 26px;
+    background:
+      repeating-linear-gradient(180deg, transparent 0 31px, var(--paper-line) 31px 32px),
+      var(--paper);
+    border-radius: 6px;
+    padding: 26px 22px 22px 64px;
     position: relative;
+    box-shadow:
+      0 1px 0 rgba(0,0,0,.06),
+      0 12px 22px rgba(0,0,0,.08);
+    border: 1px solid #ead9b5;
   }
-  .panel::before {
-    content: "";
+  .paper::before {
+    content: '';
     position: absolute;
-    top: -10px;
-    left: 24px;
-    width: 70px;
-    height: 16px;
-    background: var(--tape);
-    transform: rotate(-3deg);
-    border-radius: 1px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+    left: 48px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--paper-margin);
+    opacity: .6;
+  }
+  .paper::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 36px;
+    width: 14px;
+    height: calc(100% - 72px);
+    background-image: radial-gradient(circle, #d8c79b 0 5px, transparent 6px);
+    background-size: 14px 60px;
+    background-repeat: repeat-y;
+    opacity: .8;
   }
 
-  .panel-title {
-    font-family: "Jua", sans-serif;
+  .paper h2 {
+    font-family: 'Jua', sans-serif;
     font-size: 22px;
-    margin: 0 0 12px;
-    letter-spacing: -0.5px;
-  }
-
-  .add-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .add-form .name-row {
-    grid-column: 1 / -1;
-    display: flex;
-    gap: 8px;
-  }
-  .field-input,
-  .field-select {
-    width: 100%;
-    min-width: 0;
-    height: 50px;
-    border: 1.5px dashed var(--ink-fade);
-    background: transparent;
-    font-family: "Gowun Dodum", sans-serif;
-    font-size: 16px;
+    margin: 0 0 14px;
     color: var(--ink);
-    padding: 0 14px;
-    outline: none;
-    border-radius: 12px;
-  }
-  .field-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b6358' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
-    font-family: "Gaegu", sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .field-input:focus,
-  .field-select:focus { border-color: var(--ink); border-style: solid; }
-  .field-input::placeholder { color: var(--ink-fade); }
-
-  .primary-btn {
-    flex: 0 0 auto;
-    height: 50px;
-    min-width: 76px;
-    border: 2px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper);
-    font-family: "Jua", sans-serif;
-    font-size: 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    padding: 0 18px;
-    transition: transform 80ms ease;
-    letter-spacing: -0.5px;
-  }
-  .primary-btn:active { transform: translateY(2px) scale(0.98); }
-
-  .week-group {
-    margin-bottom: 14px;
-  }
-  .week-group:last-child { margin-bottom: 0; }
-  .week-day-label {
-    font-family: "Jua", sans-serif;
-    font-size: 18px;
-    color: var(--ink);
-    margin: 0 0 8px;
-    padding-left: 6px;
-    letter-spacing: -0.3px;
-    position: relative;
-    display: inline-block;
-  }
-  .week-day-label::before {
-    content: "";
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 6px;
-    background: var(--day-c, var(--c-wed));
-    border: 1.5px solid var(--ink);
-    vertical-align: -1px;
-  }
-  .week-day-label.today {
-    background: var(--day-c, var(--c-wed));
-    padding: 2px 10px;
-    border-radius: 8px;
-    border: 1.5px solid var(--ink);
-  }
-  .week-day-label.today::before { display: none; }
-
-  .week-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .week-list li {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+  }
+  .paper h2::before {
+    content: '✏️';
+    font-size: 22px;
+  }
+
+  .form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr auto;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .form select,
+  .form input[type="time"],
+  .form input[type="text"] {
+    font-family: 'Gaegu', cursive;
+    font-size: 18px;
     padding: 10px 12px;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-    border-radius: 10px;
-  }
-  .week-list .w-time {
-    font-family: "Jua", sans-serif;
-    font-size: 16px;
-    color: var(--ink-soft);
-    font-variant-numeric: tabular-nums;
-    min-width: 56px;
-    letter-spacing: -0.3px;
-  }
-  .week-list .w-name {
-    flex: 1;
-    font-family: "Gaegu", sans-serif;
-    font-size: 17px;
-    font-weight: 700;
+    border: 2px dashed #b8b0a0;
+    border-radius: 8px;
+    background: rgba(255,255,255,.7);
     color: var(--ink);
-    word-break: keep-all;
-    letter-spacing: -0.3px;
+    min-height: 44px;
+    outline: none;
+    transition: border-color .15s, background .15s;
   }
-  .del-btn {
+  .form select:focus,
+  .form input:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .form button {
+    font-family: 'Jua', sans-serif;
+    font-size: 16px;
+    padding: 0 16px;
+    min-height: 44px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #b9304f;
+    transition: transform .08s;
+    white-space: nowrap;
+  }
+  .form button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #b9304f;
+  }
+
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .day {
+    background: var(--sticky-y);
+    border-radius: 6px;
+    padding: 10px 8px 12px;
+    min-height: 120px;
+    box-shadow: 2px 3px 0 rgba(0,0,0,.06);
+    transform: rotate(-1deg);
+    position: relative;
+  }
+  .day:nth-child(2n) { background: var(--sticky-p); transform: rotate(1deg); }
+  .day:nth-child(3n) { background: var(--sticky-b); transform: rotate(-1.5deg); }
+  .day:nth-child(4n) { background: var(--sticky-g); transform: rotate(.8deg); }
+  .day.is-today {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .day h3 {
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    margin: 0 0 6px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .day h3 .today-mark {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    margin-left: 4px;
+    transform: translateY(-2px);
+  }
+  .day ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .day li {
+    font-family: 'Gaegu', cursive;
+    font-size: 14px;
+    line-height: 1.2;
+    background: rgba(255,255,255,.55);
+    border-radius: 4px;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    word-break: keep-all;
+  }
+  .day li .lt { font-weight: 700; }
+  .day li .ln { flex: 1; padding: 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .day li button {
     background: transparent;
     border: none;
-    color: var(--ink-fade);
-    font-size: 22px;
-    line-height: 1;
-    cursor: pointer;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    transition: color 120ms;
-  }
-  .del-btn:hover { color: var(--ink); }
-
-  .empty-week {
-    text-align: center;
-    color: var(--ink-fade);
-    font-family: "Gaegu", sans-serif;
+    color: #b9304f;
     font-size: 18px;
-    padding: 16px 0;
-    letter-spacing: -0.3px;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+    min-width: 22px;
+    min-height: 22px;
   }
-
-  .footer-note {
-    margin-top: 40px;
+  .day li button:hover { color: #6b1530; }
+  .day .none {
     text-align: center;
-    font-family: "Gaegu", sans-serif;
-    font-size: 16px;
-    color: var(--ink-fade);
-    letter-spacing: -0.3px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin-top: 6px;
+    opacity: .7;
   }
 
-  @media (max-width: 380px) {
-    .wrap { padding: 22px 16px calc(120px + env(safe-area-inset-bottom)); }
-    .title { font-size: 34px; }
+  footer.tip {
+    margin-top: 20px;
+    text-align: center;
+    font-family: 'Nanum Pen Script', cursive;
+    color: var(--ink-soft);
+    font-size: 18px;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 720px) {
+    .week { grid-template-columns: repeat(2, 1fr); }
+    .day { min-height: 90px; transform: none; }
+    .day:nth-child(n) { transform: none; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 14px 12px 60px; }
+    .board { border-width: 10px; padding: 18px 14px 20px; }
+    .board h1 { font-size: 24px; }
+    .form { grid-template-columns: 1fr 1fr; }
+    .form input[type="text"] { grid-column: 1 / span 2; }
+    .form button { grid-column: 1 / span 2; }
+    .paper { padding: 22px 16px 18px 48px; }
+    .paper::before { left: 32px; }
+    .paper::after { left: 10px; }
+    .item { grid-template-columns: 78px 1fr auto; gap: 8px; }
+    .item .time { font-size: 20px; }
+    .item .name { font-size: 18px; }
+    .countdown .value { font-size: 22px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <span class="badge-stamp">TIMETABLE</span>
-    <h1 class="title">오늘 어디가지?</h1>
-    <p class="subtitle">학원·방과후 시간표 ⏰</p>
+  <header class="top">
+    <div class="logo">
+      <span class="pin" aria-hidden="true"></span>
+      <span>오늘 어디 가야 하지?</span>
+    </div>
+    <div class="date-stamp" id="dateStamp">로딩 중…</div>
   </header>
 
-  <div class="today-card" id="today-card">
-    <div class="today-label">오늘은</div>
-    <div class="today-name"><span class="day-color" id="today-day">—요일</span></div>
-    <div class="today-date" id="today-date"></div>
+  <!-- ===== Blackboard ===== -->
+  <section class="board" aria-label="오늘 일정">
+    <div class="board-head">
+      <h1>오늘의 <span class="accent">시간표</span></h1>
+      <span class="today-tag" id="todayTag">오늘 ·</span>
+    </div>
 
-    <div id="today-body"></div>
-    <div id="countdown-box"></div>
-  </div>
-
-  <section class="panel">
-    <h2 class="panel-title">일정 추가</h2>
-    <div class="add-form">
-      <select class="field-select" id="f-day" aria-label="요일"></select>
-      <input class="field-input" type="time" id="f-time" aria-label="시간" />
-      <div class="name-row">
-        <input class="field-input" type="text" id="f-name" placeholder="일정 이름 (예: 영어학원)" maxlength="30" />
-        <button class="primary-btn" id="add-btn">＋ 추가</button>
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="icon">⏰</div>
+      <div class="text">
+        <div class="label">다음 일정까지</div>
+        <div class="value" id="countdownValue">계산 중…</div>
       </div>
     </div>
+
+    <div class="schedule" id="todayList"></div>
   </section>
 
-  <section class="panel">
-    <h2 class="panel-title">주간 일정</h2>
-    <div id="week-view"></div>
+  <!-- ===== Paper note ===== -->
+  <section class="paper">
+    <h2>일정 추가하기</h2>
+    <form class="form" id="addForm" autocomplete="off">
+      <select id="fDay" aria-label="요일">
+        <option value="0">일요일</option>
+        <option value="1">월요일</option>
+        <option value="2">화요일</option>
+        <option value="3">수요일</option>
+        <option value="4">목요일</option>
+        <option value="5">금요일</option>
+        <option value="6">토요일</option>
+      </select>
+      <input type="time" id="fTime" required aria-label="시간" />
+      <input type="text" id="fName" placeholder="예: 영어학원, 피아노 레슨…" required maxlength="30" aria-label="일정 이름" />
+      <button type="submit">＋ 추가</button>
+    </form>
+
+    <h2 style="margin-top:4px;">요일별 일정</h2>
+    <div class="week" id="week"></div>
   </section>
 
-  <div class="footer-note">지난 일정은 흐리게 표시돼요</div>
+  <footer class="tip">– 학교 끝나고 어디로 가야 하는지 한눈에 확인하세요 –</footer>
 </div>
 
 <script>
-(() => {
-  const STORAGE_KEY = "today-schedule-v2";
+(function () {
+  'use strict';
 
-  const DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
-  const DAY_ORDER_DISPLAY = [1, 2, 3, 4, 5, 6, 0];
-  const DAY_COLORS = ["--c-sun","--c-mon","--c-tue","--c-wed","--c-thu","--c-fri","--c-sat"];
+  const STORAGE_KEY = 'school-schedule-v1';
+  const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+  const DAY_NAMES_FULL = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
 
-  let state = loadState() || { items: [] };
+  /** @type {{id:string, day:number, time:string, name:string}[]} */
+  let items = load();
 
-  function loadState() {
+  function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const s = JSON.parse(raw);
-      if (!s || !Array.isArray(s.items)) return null;
-      s.items = s.items.filter(it =>
-        it && typeof it.id === "string"
-        && Number.isInteger(it.day) && it.day >= 0 && it.day <= 6
-        && /^\d{2}:\d{2}$/.test(it.time)
-        && typeof it.name === "string" && it.name.length > 0
-      );
-      return s;
-    } catch { return null; }
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (_) {}
+    return seed();
   }
-  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-  function uid() {
-    if (crypto?.randomUUID) return crypto.randomUUID();
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch (_) {}
   }
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[c]));
+
+  function seed() {
+    const today = new Date().getDay();
+    const now = new Date();
+    const hh = String(Math.min(23, now.getHours() + 1)).padStart(2,'0');
+    const mm = '00';
+    const otherA = (today + 1) % 7;
+    const otherB = (today + 3) % 7;
+    return [
+      { id: rid(), day: today,  time: `${hh}:${mm}`, name: '영어 학원' },
+      { id: rid(), day: otherA, time: '16:30',       name: '방과후 코딩' },
+      { id: rid(), day: otherB, time: '19:00',       name: '수학 학원' },
+    ];
   }
-  function timeToMinutes(t) {
-    const [h, m] = t.split(":").map(Number);
+
+  function rid() {
+    return Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+  }
+
+  function timeToMin(t) {
+    const [h, m] = t.split(':').map(Number);
     return h * 60 + m;
   }
-  function formatKoreanDate(d) {
-    return `${d.getMonth() + 1}월 ${d.getDate()}일 (${DAY_NAMES[d.getDay()]})`;
-  }
 
-  const $todayCard = document.getElementById("today-card");
-  const $todayDay = document.getElementById("today-day");
-  const $todayDate = document.getElementById("today-date");
-  const $todayBody = document.getElementById("today-body");
-  const $countdown = document.getElementById("countdown-box");
-  const $fDay = document.getElementById("f-day");
-  const $fTime = document.getElementById("f-time");
-  const $fName = document.getElementById("f-name");
-  const $addBtn = document.getElementById("add-btn");
-  const $week = document.getElementById("week-view");
-
-  DAY_ORDER_DISPLAY.forEach(d => {
-    const opt = document.createElement("option");
-    opt.value = String(d);
-    opt.textContent = DAY_NAMES[d] + "요일";
-    $fDay.appendChild(opt);
-  });
-
-  function setDayColor(now) {
-    const dayVar = DAY_COLORS[now.getDay()];
-    $todayCard.style.setProperty("--day-color", `var(${dayVar})`);
-  }
-
-  function renderHeader(now) {
-    $todayDay.textContent = DAY_NAMES[now.getDay()] + "요일";
-    $todayDate.textContent = formatKoreanDate(now);
-  }
-
-  function renderToday(now) {
-    const today = now.getDay();
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const items = state.items
-      .filter(it => it.day === today)
-      .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
-
-    if (items.length === 0) {
-      $todayBody.innerHTML = `<div class="empty-today">오늘 일정 없어요 ✨</div>`;
-      $countdown.innerHTML = "";
-      return;
-    }
-
-    const nextIdx = items.findIndex(it => timeToMinutes(it.time) > nowMin);
-
-    const ul = document.createElement("ul");
-    ul.className = "timeline";
-    items.forEach((it, i) => {
-      const li = document.createElement("li");
-      const mins = timeToMinutes(it.time);
-      const isPast = mins <= nowMin;
-      const isNext = i === nextIdx;
-      if (isPast) li.classList.add("past");
-      if (isNext) li.classList.add("next");
-      li.innerHTML = `
-        <span class="time">${escapeHtml(it.time)}</span>
-        <span class="name"></span>
-        ${isNext ? '<span class="badge">NEXT</span>' : ""}
-      `;
-      li.querySelector(".name").textContent = it.name;
-      ul.appendChild(li);
-    });
-    $todayBody.innerHTML = "";
-    $todayBody.appendChild(ul);
-
-    renderCountdown(now, items, nextIdx);
-  }
-
-  function renderCountdown(now, items, nextIdx) {
-    if (nextIdx === -1) {
-      $countdown.innerHTML = `
-        <div class="countdown done">
-          <div class="label">오늘 일정</div>
-          <div class="value">모두 끝났어요 🎉</div>
-        </div>
-      `;
-      return;
-    }
-    const next = items[nextIdx];
-    const target = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const [h, m] = next.time.split(":").map(Number);
-    target.setHours(h, m, 0, 0);
-    const diffMs = target.getTime() - now.getTime();
-    const totalSec = Math.max(0, Math.floor(diffMs / 1000));
-    const hh = Math.floor(totalSec / 3600);
-    const mm = Math.floor((totalSec % 3600) / 60);
-    const ss = totalSec % 60;
-
-    let valueText;
-    if (hh > 0) {
-      valueText = `${hh}시간 ${mm}분 남음`;
-    } else if (mm > 0) {
-      valueText = `${mm}분 ${String(ss).padStart(2, "0")}초 남음`;
-    } else {
-      valueText = `${ss}초 남음`;
-    }
-
-    $countdown.innerHTML = `
-      <div class="countdown">
-        <div class="label">NEXT</div>
-        <div class="value">${escapeHtml(valueText)}</div>
-        <div class="target">${escapeHtml(next.time)} · ${escapeHtml(next.name)}</div>
-      </div>
-    `;
-  }
-
-  function renderWeek(now) {
-    const today = now.getDay();
-    $week.innerHTML = "";
-
-    if (state.items.length === 0) {
-      const div = document.createElement("div");
-      div.className = "empty-week";
-      div.textContent = "아직 등록된 일정이 없어요";
-      $week.appendChild(div);
-      return;
-    }
-
-    DAY_ORDER_DISPLAY.forEach(d => {
-      const dayItems = state.items
-        .filter(it => it.day === d)
-        .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
-      if (dayItems.length === 0) return;
-
-      const group = document.createElement("div");
-      group.className = "week-group";
-      const label = document.createElement("p");
-      label.className = "week-day-label" + (d === today ? " today" : "");
-      label.style.setProperty("--day-c", `var(${DAY_COLORS[d]})`);
-      label.textContent = DAY_NAMES[d] + "요일" + (d === today ? " · 오늘" : "");
-      group.appendChild(label);
-
-      const ul = document.createElement("ul");
-      ul.className = "week-list";
-      dayItems.forEach(it => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <span class="w-time">${escapeHtml(it.time)}</span>
-          <span class="w-name"></span>
-          <button class="del-btn" aria-label="삭제" title="삭제">×</button>
-        `;
-        li.querySelector(".w-name").textContent = it.name;
-        li.querySelector(".del-btn").addEventListener("click", () => removeItem(it.id));
-        ul.appendChild(li);
-      });
-      group.appendChild(ul);
-      $week.appendChild(group);
-    });
+  function nowMin() {
+    const d = new Date();
+    return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60;
   }
 
   function render() {
-    const now = new Date();
-    setDayColor(now);
-    renderHeader(now);
-    renderToday(now);
-    renderWeek(now);
+    renderDate();
+    renderToday();
+    renderWeek();
+    updateCountdown();
   }
 
-  function tickCountdown() {
-    const now = new Date();
-    const today = now.getDay();
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const items = state.items
-      .filter(it => it.day === today)
-      .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
-    if (items.length === 0) return;
-    const nextIdx = items.findIndex(it => timeToMinutes(it.time) > nowMin);
-    renderCountdown(now, items, nextIdx);
+  function renderDate() {
+    const d = new Date();
+    const stamp = `${d.getMonth()+1}월 ${d.getDate()}일 ${DAY_NAMES_FULL[d.getDay()]}`;
+    document.getElementById('dateStamp').textContent = stamp;
+    document.getElementById('todayTag').textContent = `오늘 · ${DAY_NAMES[d.getDay()]}요일`;
+  }
 
-    if (nextIdx !== -1) {
-      const [h, m] = items[nextIdx].time.split(":").map(Number);
-      if (now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m)) {
-        render();
+  function renderToday() {
+    const today = new Date().getDay();
+    const list = items
+      .filter(i => i.day === today)
+      .slice()
+      .sort((a, b) => timeToMin(a.time) - timeToMin(b.time));
+
+    const container = document.getElementById('todayList');
+    container.innerHTML = '';
+
+    if (list.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-today';
+      empty.innerHTML = `<span class="big">오늘 일정 없어요 ✨</span><span>푹 쉬는 것도 일정이에요!</span>`;
+      container.appendChild(empty);
+      return;
+    }
+
+    const n = nowMin();
+    let nextAssigned = false;
+    list.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      const itemMin = timeToMin(item.time);
+      const isPast = itemMin < n;
+      if (isPast) div.classList.add('past');
+      else if (!nextAssigned) {
+        div.classList.add('next');
+        nextAssigned = true;
       }
+
+      const badge = div.classList.contains('next')
+        ? '<span class="badge">다음</span>'
+        : (isPast ? '<span class="badge" style="background:#888;color:#fff;">완료</span>' : '');
+      div.innerHTML = `
+        <div class="time">${item.time}</div>
+        <div class="name">${escapeHtml(item.name)}</div>
+        <div>${badge}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function renderWeek() {
+    const week = document.getElementById('week');
+    week.innerHTML = '';
+    const today = new Date().getDay();
+
+    for (let d = 0; d < 7; d++) {
+      const dayItems = items
+        .filter(i => i.day === d)
+        .slice()
+        .sort((a, b) => timeToMin(a.time) - timeToMin(b.time));
+
+      const card = document.createElement('div');
+      card.className = 'day' + (d === today ? ' is-today' : '');
+
+      const h = document.createElement('h3');
+      h.innerHTML = `${DAY_NAMES_FULL[d]}${d === today ? '<span class="today-mark">오늘</span>' : ''}`;
+      card.appendChild(h);
+
+      if (dayItems.length === 0) {
+        const none = document.createElement('div');
+        none.className = 'none';
+        none.textContent = '— 없음 —';
+        card.appendChild(none);
+      } else {
+        const ul = document.createElement('ul');
+        dayItems.forEach(it => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="lt">${it.time}</span>
+            <span class="ln">${escapeHtml(it.name)}</span>
+            <button type="button" aria-label="삭제" data-id="${it.id}">✕</button>
+          `;
+          ul.appendChild(li);
+        });
+        card.appendChild(ul);
+      }
+      week.appendChild(card);
     }
   }
 
-  function addItem() {
-    const day = Number($fDay.value);
-    const time = $fTime.value;
-    const name = $fName.value.trim();
-    if (!Number.isInteger(day) || day < 0 || day > 6) return;
-    if (!/^\d{2}:\d{2}$/.test(time)) {
-      alert("시간을 입력해 주세요.");
-      $fTime.focus();
+  function updateCountdown() {
+    const today = new Date().getDay();
+    const list = items
+      .filter(i => i.day === today)
+      .slice()
+      .sort((a, b) => timeToMin(a.time) - timeToMin(b.time));
+
+    const cd = document.getElementById('countdown');
+    const val = document.getElementById('countdownValue');
+    cd.classList.remove('empty');
+
+    if (list.length === 0) {
+      cd.classList.add('empty');
+      val.textContent = '오늘은 카운트다운 쉬는 날 🛋️';
       return;
     }
-    if (!name) {
-      alert("일정 이름을 입력해 주세요.");
-      $fName.focus();
+
+    const now = new Date();
+    const nowSec = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+    const upcoming = list.find(i => timeToMin(i.time)*60 > nowSec);
+
+    if (!upcoming) {
+      val.textContent = '오늘 일정 모두 끝! 👏';
       return;
     }
-    state.items.push({ id: uid(), day, time, name });
-    $fName.value = "";
-    $fTime.value = "";
-    saveState();
-    render();
-    $fName.focus();
+
+    const diff = timeToMin(upcoming.time)*60 - nowSec;
+    const h = Math.floor(diff / 3600);
+    const m = Math.floor((diff % 3600) / 60);
+    const s = diff % 60;
+
+    let txt;
+    if (h > 0) txt = `${h}시간 ${m}분 ${String(s).padStart(2,'0')}초`;
+    else if (m > 0) txt = `${m}분 ${String(s).padStart(2,'0')}초`;
+    else txt = `${s}초`;
+
+    val.textContent = `${upcoming.name} · ${txt} 남음`;
   }
 
-  function removeItem(id) {
-    const it = state.items.find(x => x.id === id);
-    if (!it) return;
-    if (!confirm(`'${it.name}' 일정을 삭제할까요?`)) return;
-    state.items = state.items.filter(x => x.id !== id);
-    saveState();
-    render();
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
   }
 
-  $fDay.value = String(new Date().getDay());
-  $addBtn.addEventListener("click", addItem);
-  $fName.addEventListener("keydown", e => { if (e.key === "Enter") addItem(); });
-  $fTime.addEventListener("keydown", e => { if (e.key === "Enter") addItem(); });
+  document.getElementById('addForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const day = Number(document.getElementById('fDay').value);
+    const time = document.getElementById('fTime').value;
+    const name = document.getElementById('fName').value.trim();
+    if (!time || !name) return;
+    items.push({ id: rid(), day, time, name });
+    save();
+    document.getElementById('fName').value = '';
+    render();
+  });
 
+  document.getElementById('week').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
+    const id = btn.getAttribute('data-id');
+    items = items.filter(i => i.id !== id);
+    save();
+    render();
+  });
+
+  document.getElementById('fDay').value = String(new Date().getDay());
+
+  save();
   render();
-  setInterval(tickCountdown, 1000);
-
-  let lastDay = new Date().getDate();
   setInterval(() => {
-    const d = new Date().getDate();
-    if (d !== lastDay) { lastDay = d; render(); }
-  }, 30 * 1000);
+    updateCountdown();
+    if (new Date().getSeconds() === 0) {
+      renderToday();
+    }
+  }, 1000);
 })();
 </script>
 </body>

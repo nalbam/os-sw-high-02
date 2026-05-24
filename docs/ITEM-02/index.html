@@ -1,615 +1,741 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-<meta name="theme-color" content="#f3ecdc" />
-<title>이번 주 청소 당번</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#2f4a3a" />
+<title>우리 반 청소 당번</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #f3ecdc;
-    --paper-soft: #fffbf0;
-    --ink: #2a2620;
-    --ink-soft: #6b6358;
-    --ink-fade: #b3a994;
-
-    --board:       #2f5d4a;
-    --board-edge:  #6b4a2a;
-    --chalk:       #fefef0;
-    --chalk-soft:  #e3e3c4;
-    --chalk-pink:  #ffb6c4;
-    --chalk-mint:  #b8f0c4;
-    --chalk-yellow:#ffe78a;
-    --chalk-blue:  #a6cfff;
-
-    --tape: rgba(255, 230, 120, 0.78);
-  }
-
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
-    font-size: 17px;
-    line-height: 1.55;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overscroll-behavior-y: contain;
+  html, body { margin: 0; padding: 0; }
+  :root {
+    --paper: #f7f1e1;
+    --paper-shadow: rgba(60, 45, 20, 0.18);
+    --board: #2f4a3a;
+    --board-edge: #6b4a2b;
+    --board-edge-light: #8a6238;
+    --chalk: #fdfdf8;
+    --chalk-yellow: #ffe9a8;
+    --chalk-pink: #ffc0cb;
+    --ink: #3a2e22;
+    --ink-soft: #6a5742;
+    --accent: #e7553c;
+    --sticky-yellow: #fff3a6;
+    --sticky-pink: #ffd0d8;
+    --sticky-blue: #cfe7ff;
+    --sticky-green: #d2f0c4;
   }
-
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, #fff8e2 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, #ffe9d4 0%, transparent 45%),
+      #f1e6c8;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 18px 14px 60px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
   body::before {
     content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 14% 18%, rgba(255, 200, 110, 0.10) 0, transparent 45%),
-      radial-gradient(circle at 86% 76%, rgba(120, 200, 150, 0.10) 0, transparent 50%);
+    position: fixed; inset: 0;
     pointer-events: none;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(120, 90, 50, 0.04) 0 1px, transparent 1px 28px);
     z-index: 0;
   }
-
-  .wrap {
-    position: relative;
-    z-index: 2;
-    max-width: 520px;
+  .app {
+    max-width: 480px;
     margin: 0 auto;
-    padding: 28px 22px calc(120px + env(safe-area-inset-bottom));
+    position: relative;
+    z-index: 1;
   }
-
-  header { margin-bottom: 22px; }
-
-  .badge-stamp {
-    display: inline-block;
-    font-family: "Jua", "Gaegu", sans-serif;
-    font-size: 14px;
-    color: var(--board);
-    border: 2.5px solid var(--board);
-    padding: 3px 10px 2px;
-    border-radius: 8px;
-    transform: rotate(-2deg);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    background: rgba(255, 255, 255, 0.4);
+  .header {
+    text-align: center;
+    margin-bottom: 14px;
+    transform: rotate(-1deg);
   }
-
-  .title {
-    font-family: "Jua", sans-serif;
-    font-size: 40px;
-    color: var(--ink);
+  .header h1 {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 2.2rem;
     margin: 0;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
-    position: relative;
-    display: inline-block;
+    color: var(--ink);
+    letter-spacing: 1px;
   }
-  .title::after {
-    content: "";
-    position: absolute;
-    left: -4px;
-    right: -4px;
-    bottom: 4px;
-    height: 14px;
-    background: var(--chalk-yellow);
-    z-index: -1;
-    opacity: 0.85;
-    transform: skewX(-4deg);
-    border-radius: 2px;
-  }
-  .subtitle {
-    font-family: "Gaegu", sans-serif;
-    font-size: 19px;
+  .header .sub {
+    font-family: 'Gaegu', cursive;
+    font-size: 1.05rem;
     color: var(--ink-soft);
-    margin: 8px 0 0;
-    letter-spacing: -0.4px;
+    margin-top: 2px;
   }
-
-  /* 칠판 카드 — 이번 주 당번 */
-  .board {
-    margin-top: 22px;
+  /* Chalkboard */
+  .board-wrap {
+    background: var(--board-edge);
+    background-image: linear-gradient(180deg, var(--board-edge-light), var(--board-edge));
+    padding: 14px;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(40, 25, 5, 0.28), inset 0 -4px 8px rgba(0,0,0,0.25);
     position: relative;
-    padding: 28px 22px 26px;
+  }
+  .board-wrap::before, .board-wrap::after {
+    content: "";
+    position: absolute; top: 50%;
+    width: 14px; height: 14px;
+    background: radial-gradient(circle at 35% 35%, #d4b07a, #6b4a2b);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: inset -1px -1px 3px rgba(0,0,0,0.3);
+  }
+  .board-wrap::before { left: 4px; }
+  .board-wrap::after { right: 4px; }
+  .board {
     background: var(--board);
     background-image:
-      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.04) 0, transparent 40%),
-      radial-gradient(circle at 70% 70%, rgba(255,255,255,0.05) 0, transparent 45%);
-    border: 8px solid var(--board-edge);
-    border-radius: 18px;
-    box-shadow: 5px 5px 0 0 var(--ink);
+      radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(255,255,255,0.05) 0%, transparent 55%),
+      linear-gradient(135deg, #2f4a3a, #28402f);
+    border-radius: 8px;
+    padding: 24px 18px 26px;
     color: var(--chalk);
     text-align: center;
+    position: relative;
     overflow: hidden;
+    min-height: 240px;
   }
   .board::after {
     content: "";
-    position: absolute;
-    bottom: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 10px;
-    background: rgba(0,0,0,0.12);
-    filter: blur(6px);
-    border-radius: 50%;
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 5px);
     pointer-events: none;
   }
-
-  .board .week-label {
-    font-family: "Gaegu", sans-serif;
-    font-size: 18px;
-    color: var(--chalk-soft);
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-  }
-  .board .name {
-    font-family: "Jua", sans-serif;
-    font-size: clamp(48px, 14vw, 68px);
-    letter-spacing: -1px;
-    line-height: 1.05;
-    color: var(--chalk);
-    word-break: keep-all;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
-  }
-  .board .name.empty { color: var(--chalk-soft); font-size: 28px; padding: 18px 0; }
-  .board .range {
-    font-family: "Gaegu", sans-serif;
-    font-size: 17px;
-    color: var(--chalk-soft);
-    margin-top: 10px;
-    letter-spacing: 0.3px;
-  }
-
-  .upcoming {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1.5px dashed rgba(255,255,255,0.25);
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .upcoming-chip {
-    background: rgba(255,255,255,0.08);
-    border: 1.5px dashed rgba(255,255,255,0.35);
-    border-radius: 12px;
-    padding: 8px 14px;
-    font-family: "Gaegu", sans-serif;
-    color: var(--chalk);
-    font-size: 16px;
-    letter-spacing: -0.3px;
-  }
-  .upcoming-chip .who {
+  .board .label {
+    font-family: 'Gaegu', cursive;
+    font-size: 1.1rem;
     color: var(--chalk-yellow);
-    font-weight: 700;
-    margin-left: 6px;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+    opacity: 0.95;
+  }
+  .board .week-info {
+    font-family: 'Gaegu', cursive;
+    font-size: 0.95rem;
+    color: var(--chalk-pink);
+    margin-bottom: 14px;
+    opacity: 0.9;
+  }
+  .board .today-name {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 4.2rem;
+    line-height: 1.05;
+    margin: 4px 0 10px;
+    text-shadow:
+      0 0 1px rgba(255,255,255,0.6),
+      2px 2px 0 rgba(0,0,0,0.15);
+    word-break: keep-all;
+  }
+  .board .underline {
+    width: 60%;
+    max-width: 220px;
+    height: 4px;
+    margin: 6px auto 14px;
+    background-image: repeating-linear-gradient(90deg, var(--chalk) 0 10px, transparent 10px 16px);
+    opacity: 0.75;
+    border-radius: 2px;
+  }
+  .board .empty-msg {
+    font-family: 'Gaegu', cursive;
+    color: var(--chalk-yellow);
+    font-size: 1.2rem;
+    padding: 30px 8px;
+    display: block;
+  }
+  .corner-deco {
+    position: absolute;
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.3rem;
+    color: var(--chalk-pink);
+    opacity: 0.7;
+  }
+  .corner-deco.tl { top: 8px; left: 12px; transform: rotate(-8deg); }
+  .corner-deco.br { bottom: 8px; right: 12px; transform: rotate(6deg); font-size: 1.1rem; color: var(--chalk-yellow); }
+
+  /* Upcoming */
+  .upcoming {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .sticky {
+    flex: 1;
+    padding: 14px 12px 16px;
+    border-radius: 4px;
+    box-shadow: 0 6px 12px var(--paper-shadow);
+    text-align: center;
+    position: relative;
+    transform: rotate(-1.5deg);
+    font-family: 'Gaegu', cursive;
+  }
+  .sticky.next { background: var(--sticky-yellow); }
+  .sticky.after { background: var(--sticky-pink); transform: rotate(2deg); }
+  .sticky .tag {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .sticky .name {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.8rem;
+    color: var(--ink);
+    line-height: 1.1;
+    word-break: keep-all;
+  }
+  .sticky::before {
+    content: "";
+    position: absolute; top: -8px; left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 50px; height: 14px;
+    background: rgba(180, 140, 80, 0.45);
+    border-radius: 2px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
   }
 
-  /* 종이 카드 — 친구 명단 / 맞추기 */
-  .panel {
+  /* Paper card */
+  .paper {
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 26px, rgba(120, 100, 70, 0.18) 26px 27px),
+      linear-gradient(90deg, transparent 30px, rgba(220, 60, 60, 0.4) 30px 31px, transparent 31px);
+    border-radius: 6px;
+    padding: 18px 18px 18px 38px;
     margin-top: 22px;
-    padding: 18px 18px 16px;
-    background: var(--paper-soft);
-    border: 2px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 5px 5px 0 0 var(--ink);
+    box-shadow: 0 8px 18px var(--paper-shadow);
     position: relative;
   }
-  .panel::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 24px;
-    width: 70px;
-    height: 16px;
-    background: var(--tape);
-    transform: rotate(-3deg);
-    border-radius: 1px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  .paper h2 {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.6rem;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .paper h2 .pin {
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: radial-gradient(circle at 35% 35%, #ff8a8a, #c0392b);
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
   }
 
-  .panel-title {
-    font-family: "Jua", sans-serif;
-    font-size: 22px;
-    margin: 0 0 12px;
-    letter-spacing: -0.5px;
-  }
-
-  .names {
+  .name-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 14px;
+    margin: 0 0 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
-  .names li {
+  .name-list li {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-    border-radius: 12px;
-    transition: transform 120ms ease;
+    font-family: 'Gaegu', cursive;
+    font-size: 1.25rem;
+    color: var(--ink);
+    padding: 6px 4px;
+    border-bottom: 1px dashed rgba(120,100,70,0.3);
   }
-  .names li.current {
-    background: var(--chalk-yellow);
-    transform: translateX(2px);
-    box-shadow: 2px 2px 0 0 var(--ink);
+  .name-list li .order {
+    font-family: 'Nanum Pen Script', cursive;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
   }
-  .names .order {
-    font-family: "Jua", sans-serif;
-    font-size: 18px;
-    color: var(--ink-soft);
-    width: 26px;
-    text-align: center;
-    line-height: 1;
-  }
-  .names li.current .order { color: var(--ink); }
-  .names .name {
+  .name-list li .name-text {
     flex: 1;
-    font-family: "Gaegu", sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
+    word-break: keep-all;
   }
-  .names .current-badge {
-    font-family: "Jua", sans-serif;
-    font-size: 13px;
-    background: var(--ink);
-    color: var(--chalk);
-    padding: 3px 9px 2px;
-    border-radius: 999px;
-    letter-spacing: 0.5px;
+  .name-list li.current-marker .name-text::after {
+    content: "← 오늘!";
+    font-family: 'Nanum Pen Script', cursive;
+    color: var(--accent);
+    margin-left: 8px;
+    font-size: 1.1rem;
   }
-  .names .del-btn {
+  .name-list li button {
     background: transparent;
     border: none;
-    color: var(--ink-fade);
-    font-size: 22px;
-    line-height: 1;
+    color: var(--ink-soft);
+    font-family: 'Gaegu', cursive;
+    font-size: 1rem;
+    padding: 6px 10px;
     cursor: pointer;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    transition: color 120ms;
+    border-radius: 6px;
+    min-height: 40px;
+    min-width: 40px;
   }
-  .names .del-btn:hover { color: var(--ink); }
+  .name-list li button:hover { background: rgba(0,0,0,0.05); }
 
-  .empty-names {
-    text-align: center;
-    color: var(--ink-fade);
-    font-family: "Gaegu", sans-serif;
-    font-size: 18px;
-    padding: 20px 0;
-    letter-spacing: -0.3px;
-  }
-
-  .row {
+  .add-row {
     display: flex;
     gap: 8px;
+    margin-top: 12px;
   }
-
-  .field-input,
-  .field-select {
+  .add-row input {
     flex: 1;
-    min-width: 0;
-    height: 50px;
-    border: 1.5px dashed var(--ink-fade);
-    background: transparent;
-    font-family: "Gowun Dodum", sans-serif;
-    font-size: 16px;
+    font-family: 'Gaegu', cursive;
+    font-size: 1.15rem;
+    padding: 10px 12px;
+    border: 2px dashed rgba(120,100,70,0.5);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.5);
     color: var(--ink);
-    padding: 0 14px;
-    outline: none;
-    border-radius: 12px;
+    min-height: 44px;
+    min-width: 0;
   }
-  .field-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b6358' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
-    font-family: "Gaegu", sans-serif;
-    font-size: 18px;
+  .add-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+  .btn {
+    font-family: 'Gaegu', cursive;
+    font-size: 1.05rem;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 44px;
+    transition: transform 0.1s, box-shadow 0.1s;
     font-weight: 700;
   }
-  .field-input:focus,
-  .field-select:focus { border-color: var(--ink); border-style: solid; }
-  .field-input::placeholder { color: var(--ink-fade); }
-
-  .primary-btn {
-    flex: 0 0 auto;
-    height: 50px;
-    min-width: 76px;
+  .btn:active { transform: translateY(1px); }
+  .btn.primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 3px 0 #b03d2a;
+  }
+  .btn.primary:active { box-shadow: 0 1px 0 #b03d2a; }
+  .btn.ghost {
+    background: white;
+    color: var(--ink);
     border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .btn.ghost:active { box-shadow: 1px 1px 0 var(--ink); }
+
+  .sync-section {
+    margin-top: 22px;
+    background: var(--sticky-blue);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 6px 14px var(--paper-shadow);
+    transform: rotate(0.5deg);
+  }
+  .sync-section h3 {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.4rem;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .sync-section .hint {
+    font-family: 'Gaegu', cursive;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .sync-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .sync-row select {
+    flex: 1;
+    font-family: 'Gaegu', cursive;
+    font-size: 1.1rem;
+    padding: 10px;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    background: white;
+    color: var(--ink);
+    min-height: 44px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%233a2e22' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    min-width: 0;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
     background: var(--ink);
-    color: var(--paper);
-    font-family: "Jua", sans-serif;
-    font-size: 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    padding: 0 18px;
-    transition: transform 80ms ease;
-    letter-spacing: -0.5px;
-  }
-  .primary-btn:active { transform: translateY(2px) scale(0.98); }
-  .primary-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-  .hint {
-    font-family: "Gaegu", sans-serif;
-    font-size: 15px;
-    color: var(--ink-fade);
-    margin-top: 10px;
+    color: var(--chalk);
+    font-family: 'Gaegu', cursive;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    z-index: 100;
+    pointer-events: none;
+    max-width: 90%;
     text-align: center;
-    letter-spacing: -0.3px;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
   }
 
-  .footer-note {
-    margin-top: 40px;
-    text-align: center;
-    font-family: "Gaegu", sans-serif;
-    font-size: 16px;
-    color: var(--ink-fade);
-    letter-spacing: -0.3px;
+  @keyframes pop {
+    0% { transform: scale(0.9); opacity: 0.4; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
   }
+  .pop { animation: pop 0.45s ease-out; }
 
-  @media (max-width: 380px) {
-    .wrap { padding: 22px 16px calc(120px + env(safe-area-inset-bottom)); }
-    .title { font-size: 34px; }
-    .board { padding: 22px 18px 22px; }
+  @media (max-width: 360px) {
+    .board .today-name { font-size: 3.4rem; }
+    .header h1 { font-size: 1.9rem; }
+    .sticky .name { font-size: 1.5rem; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <span class="badge-stamp">CLEAN DUTY</span>
-    <h1 class="title">청소 당번</h1>
-    <p class="subtitle">월요일마다 자동으로 넘어가요 🧹</p>
-  </header>
+  <div class="app">
+    <div class="header">
+      <h1>우리 반 청소 당번</h1>
+      <div class="sub">이번 주 누구 차례지? 한 눈에 보자!</div>
+    </div>
 
-  <div class="board">
-    <div class="week-label">이번 주 당번은</div>
-    <div class="name" id="today-name">—</div>
-    <div class="range" id="week-range"></div>
-    <div class="upcoming" id="upcoming"></div>
+    <div class="board-wrap">
+      <div class="board" id="board">
+        <span class="corner-deco tl">★</span>
+        <span class="corner-deco br">♪</span>
+        <div class="label">오 늘  당 번</div>
+        <div class="week-info" id="weekInfo">이번 주</div>
+        <div class="today-name" id="todayName">—</div>
+        <div class="underline"></div>
+        <div class="week-info" id="todayDate"></div>
+      </div>
+    </div>
+
+    <div class="upcoming">
+      <div class="sticky next">
+        <div class="tag">다음 주</div>
+        <div class="name" id="nextName">—</div>
+      </div>
+      <div class="sticky after">
+        <div class="tag">그 다음 주</div>
+        <div class="name" id="afterName">—</div>
+      </div>
+    </div>
+
+    <div class="paper">
+      <h2><span class="pin"></span>당번 명단</h2>
+      <ul class="name-list" id="nameList"></ul>
+      <div class="add-row">
+        <input type="text" id="newName" placeholder="이름 추가 (예: 김민준)" maxlength="10" />
+        <button class="btn primary" id="addBtn">+ 추가</button>
+      </div>
+    </div>
+
+    <div class="sync-section">
+      <h3>이번 주 당번 맞추기</h3>
+      <div class="hint">실제 우리 반 당번 순서랑 안 맞을 때!</div>
+      <div class="sync-row">
+        <select id="syncSelect" aria-label="이번 주 당번으로 맞출 사람"></select>
+        <button class="btn ghost" id="syncBtn">맞추기</button>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="btn ghost" id="resetBtn">처음으로 되돌리기</button>
+    </div>
   </div>
 
-  <section class="panel">
-    <h2 class="panel-title">친구 명단</h2>
-    <ul class="names" id="names-list"></ul>
-    <div class="row">
-      <input class="field-input" type="text" id="name-input" placeholder="이름 입력 (예: 김민준)" maxlength="20" />
-      <button class="primary-btn" id="add-btn">＋ 추가</button>
-    </div>
-  </section>
-
-  <section class="panel">
-    <h2 class="panel-title">이번 주 당번 맞추기</h2>
-    <div class="row">
-      <select class="field-select" id="sync-select"></select>
-      <button class="primary-btn" id="sync-btn">맞추기</button>
-    </div>
-    <p class="hint">실제 반의 당번 순서에 한 번만 맞춰 주세요</p>
-  </section>
-
-  <div class="footer-note">데이터는 이 폰에만 저장돼요</div>
-</div>
+  <div class="toast" id="toast">알림</div>
 
 <script>
-(() => {
-  const STORAGE_KEY = "cleanup-duty-state-v2";
+(function () {
+  'use strict';
 
-  let state = loadState() || {
-    names: [],
-    anchorMonday: toISODate(getMondayOf(new Date())),
-    anchorIndex: 0,
-  };
+  var STORAGE_KEY = 'cleaning-duty-v1';
+  var WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+  var SAMPLE_NAMES = ['김민준', '이서연', '박지호', '정하윤', '최도윤'];
+
+  // Fixed anchor Monday so rotation is deterministic regardless of "today".
+  var ANCHOR_MONDAY = new Date(2025, 2, 3); // 2025-03-03 (Mon)
+  ANCHOR_MONDAY.setHours(0, 0, 0, 0);
+
+  function getMondayOf(date) {
+    var d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    var day = d.getDay(); // Sun=0, Mon=1, ...
+    var diff = (day === 0 ? -6 : 1 - day);
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function weeksSinceAnchor(now) {
+    var thisMonday = getMondayOf(now);
+    var diff = thisMonday.getTime() - ANCHOR_MONDAY.getTime();
+    return Math.round(diff / WEEK_MS);
+  }
 
   function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
-      const s = JSON.parse(raw);
-      if (!s || !Array.isArray(s.names) || typeof s.anchorMonday !== "string"
-          || typeof s.anchorIndex !== "number") {
-        return null;
-      }
-      return s;
-    } catch { return null; }
-  }
-  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-  function getMondayOf(date) {
-    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const day = d.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    d.setDate(d.getDate() + diff);
-    return d;
-  }
-  function toISODate(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${dd}`;
-  }
-  function fromISODate(s) {
-    const [y, m, d] = s.split("-").map(Number);
-    return new Date(y, m - 1, d);
-  }
-  function addDays(d, n) {
-    const r = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    r.setDate(r.getDate() + n);
-    return r;
-  }
-  function weeksBetween(fromMonday, toMonday) {
-    const ms = toMonday.getTime() - fromMonday.getTime();
-    return Math.round(ms / (7 * 24 * 60 * 60 * 1000));
-  }
-  function formatKoreanDate(d) { return `${d.getMonth() + 1}월 ${d.getDate()}일`; }
-  function formatWeekRange(monday) {
-    const sun = addDays(monday, 6);
-    return `${formatKoreanDate(monday)} ~ ${formatKoreanDate(sun)}`;
+      var parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.names)) return null;
+      if (typeof parsed.offset !== 'number') parsed.offset = 0;
+      return parsed;
+    } catch (e) {
+      return null;
+    }
   }
 
-  function dutyAt(weekOffset) {
-    if (state.names.length === 0) return null;
-    const anchor = fromISODate(state.anchorMonday);
-    const target = addDays(anchor, 7 * (currentWeekOffset() + weekOffset));
-    const offsetFromAnchor = weeksBetween(anchor, target);
-    const idx = ((state.anchorIndex + offsetFromAnchor) % state.names.length
-      + state.names.length) % state.names.length;
-    return { name: state.names[idx], monday: target, index: idx };
-  }
-  function currentWeekOffset() {
-    const todayMonday = getMondayOf(new Date());
-    return weeksBetween(fromISODate(state.anchorMonday), todayMonday);
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      // storage full or disabled — ignore in demo
+    }
   }
 
-  const $today = document.getElementById("today-name");
-  const $range = document.getElementById("week-range");
-  const $upcoming = document.getElementById("upcoming");
-  const $list = document.getElementById("names-list");
-  const $input = document.getElementById("name-input");
-  const $addBtn = document.getElementById("add-btn");
-  const $select = document.getElementById("sync-select");
-  const $syncBtn = document.getElementById("sync-btn");
+  function defaultState() {
+    return { names: SAMPLE_NAMES.slice(), offset: 0 };
+  }
+
+  var state = loadState() || defaultState();
+
+  // Elements
+  var elTodayName = document.getElementById('todayName');
+  var elWeekInfo  = document.getElementById('weekInfo');
+  var elTodayDate = document.getElementById('todayDate');
+  var elNextName  = document.getElementById('nextName');
+  var elAfterName = document.getElementById('afterName');
+  var elNameList  = document.getElementById('nameList');
+  var elNewName   = document.getElementById('newName');
+  var elAddBtn    = document.getElementById('addBtn');
+  var elSyncSel   = document.getElementById('syncSelect');
+  var elSyncBtn   = document.getElementById('syncBtn');
+  var elResetBtn  = document.getElementById('resetBtn');
+  var elBoard     = document.getElementById('board');
+  var elToast     = document.getElementById('toast');
+
+  var toastTimer = null;
+  function toast(msg) {
+    elToast.textContent = msg;
+    elToast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      elToast.classList.remove('show');
+    }, 1800);
+  }
+
+  function pickName(weekIdx) {
+    var n = state.names.length;
+    if (n === 0) return null;
+    var idx = ((weekIdx + state.offset) % n + n) % n;
+    return { idx: idx, name: state.names[idx] };
+  }
+
+  function formatDateRange(monday) {
+    var sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    var m1 = monday.getMonth() + 1;
+    var d1 = monday.getDate();
+    var m2 = sunday.getMonth() + 1;
+    var d2 = sunday.getDate();
+    return m1 + '월 ' + d1 + '일 ~ ' + m2 + '월 ' + d2 + '일';
+  }
 
   function render() {
-    const current = dutyAt(0);
-    if (!current) {
-      $today.textContent = "친구를 먼저 추가해 줘";
-      $today.classList.add("empty");
-      $range.textContent = "";
-      $upcoming.innerHTML = "";
-    } else {
-      $today.textContent = current.name;
-      $today.classList.remove("empty");
-      $range.textContent = formatWeekRange(current.monday);
-      const next1 = dutyAt(1);
-      const next2 = dutyAt(2);
-      $upcoming.innerHTML = `
-        <div class="upcoming-chip">다음 주<span class="who">${escapeHtml(next1.name)}</span></div>
-        <div class="upcoming-chip">그 다음 주<span class="who">${escapeHtml(next2.name)}</span></div>
-      `;
-    }
+    var now = new Date();
+    var thisWeek = weeksSinceAnchor(now);
+    var thisMonday = getMondayOf(now);
 
-    $list.innerHTML = "";
-    if (state.names.length === 0) {
-      const li = document.createElement("li");
-      li.className = "empty-names";
-      li.textContent = "아직 등록된 친구가 없어요 🙋";
-      $list.appendChild(li);
-    } else {
-      const currentIdx = current ? current.index : -1;
-      state.names.forEach((name, i) => {
-        const li = document.createElement("li");
-        if (i === currentIdx) li.classList.add("current");
-        li.innerHTML = `
-          <span class="order">${i + 1}</span>
-          <span class="name"></span>
-          ${i === currentIdx ? '<span class="current-badge">이번 주</span>' : ""}
-          <button class="del-btn" aria-label="삭제" title="삭제">×</button>
-        `;
-        li.querySelector(".name").textContent = name;
-        li.querySelector(".del-btn").addEventListener("click", () => removeName(i));
-        $list.appendChild(li);
-      });
-    }
+    var todayPick = pickName(thisWeek);
+    var nextPick  = pickName(thisWeek + 1);
+    var afterPick = pickName(thisWeek + 2);
 
-    const prev = $select.value;
-    $select.innerHTML = "";
-    if (state.names.length === 0) {
-      const opt = document.createElement("option");
-      opt.textContent = "친구를 먼저 추가해 주세요";
-      opt.disabled = true;
-      opt.selected = true;
-      $select.appendChild(opt);
-      $syncBtn.disabled = true;
+    // Board
+    if (todayPick) {
+      elTodayName.textContent = todayPick.name;
+      elTodayDate.textContent = formatDateRange(thisMonday);
+      elWeekInfo.textContent  = '이번 주';
     } else {
-      state.names.forEach((name, i) => {
-        const opt = document.createElement("option");
-        opt.value = String(i);
-        opt.textContent = name;
-        $select.appendChild(opt);
+      elTodayName.innerHTML = '<span class="empty-msg">친구 이름을<br/>먼저 추가해 줘!</span>';
+      elTodayDate.textContent = '';
+      elWeekInfo.textContent = '';
+    }
+    elNextName.textContent  = nextPick  ? nextPick.name  : '—';
+    elAfterName.textContent = afterPick ? afterPick.name : '—';
+
+    // Name list
+    elNameList.innerHTML = '';
+    state.names.forEach(function (name, i) {
+      var li = document.createElement('li');
+      if (todayPick && todayPick.idx === i) li.classList.add('current-marker');
+
+      var orderSpan = document.createElement('span');
+      orderSpan.className = 'order';
+      orderSpan.textContent = String(i + 1);
+
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'name-text';
+      nameSpan.textContent = name;
+
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.setAttribute('aria-label', name + ' 삭제');
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function () {
+        removeName(i);
       });
-      if (prev && Number(prev) < state.names.length) {
-        $select.value = prev;
-      } else if (current) {
-        $select.value = String(current.index);
-      }
-      $syncBtn.disabled = false;
+
+      li.appendChild(orderSpan);
+      li.appendChild(nameSpan);
+      li.appendChild(delBtn);
+      elNameList.appendChild(li);
+    });
+
+    // Sync select
+    elSyncSel.innerHTML = '';
+    if (state.names.length === 0) {
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = '(이름 없음)';
+      elSyncSel.appendChild(opt);
+      elSyncSel.disabled = true;
+      elSyncBtn.disabled = true;
+    } else {
+      elSyncSel.disabled = false;
+      elSyncBtn.disabled = false;
+      state.names.forEach(function (name, i) {
+        var o = document.createElement('option');
+        o.value = String(i);
+        o.textContent = name;
+        if (todayPick && todayPick.idx === i) o.selected = true;
+        elSyncSel.appendChild(o);
+      });
     }
   }
 
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[c]));
+  function animateBoard() {
+    var el = elBoard.querySelector('.today-name');
+    if (!el) return;
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
   }
 
-  function addName() {
-    const v = $input.value.trim();
-    if (!v) return;
-    if (state.names.includes(v)) {
-      $input.select();
+  function addName(raw) {
+    var name = (raw || '').trim();
+    if (!name) {
+      toast('이름을 입력해 줘!');
       return;
     }
-    state.names.push(v);
-    $input.value = "";
-    saveState();
-    render();
-  }
-
-  function removeName(index) {
-    const name = state.names[index];
-    if (!confirm(`'${name}' 님을 명단에서 빼시겠어요?`)) return;
-    const current = dutyAt(0);
-    state.names.splice(index, 1);
-    if (state.names.length === 0) {
-      state.anchorIndex = 0;
-    } else if (current) {
-      let newIdx;
-      if (index === current.index) {
-        newIdx = current.index % state.names.length;
-      } else if (index < current.index) {
-        newIdx = current.index - 1;
-      } else {
-        newIdx = current.index;
-      }
-      state.anchorMonday = toISODate(getMondayOf(new Date()));
-      state.anchorIndex = newIdx;
+    if (name.length > 10) name = name.slice(0, 10);
+    if (state.names.indexOf(name) !== -1) {
+      toast('이미 있는 이름이야!');
+      return;
     }
+    state.names.push(name);
     saveState();
     render();
+    toast(name + ' 추가됨!');
   }
 
-  function syncCurrent() {
-    if (state.names.length === 0) return;
-    const idx = Number($select.value);
-    if (Number.isNaN(idx)) return;
-    state.anchorMonday = toISODate(getMondayOf(new Date()));
-    state.anchorIndex = idx;
+  function removeName(i) {
+    var removed = state.names[i];
+    if (state.names.length <= 1) {
+      toast('최소 한 명은 있어야 해!');
+      return;
+    }
+    if (!confirm(removed + ' 을(를) 삭제할까?')) return;
+    state.names.splice(i, 1);
+    var n = state.names.length;
+    state.offset = ((state.offset % n) + n) % n;
     saveState();
     render();
+    toast(removed + ' 삭제됨');
   }
 
-  $addBtn.addEventListener("click", addName);
-  $input.addEventListener("keydown", (e) => { if (e.key === "Enter") addName(); });
-  $syncBtn.addEventListener("click", syncCurrent);
+  function syncTo(targetIdx) {
+    var n = state.names.length;
+    if (n === 0) return;
+    var now = new Date();
+    var thisWeek = weeksSinceAnchor(now);
+    // Want: ((thisWeek + offset) mod n) === targetIdx
+    var newOffset = ((targetIdx - thisWeek) % n + n) % n;
+    state.offset = newOffset;
+    saveState();
+    render();
+    animateBoard();
+    toast('이번 주 당번을 ' + state.names[targetIdx] + ' 로 맞췄어!');
+  }
 
-  setInterval(() => {
-    const now = new Date();
-    if (now.getHours() === 0 && now.getMinutes() < 5) render();
-  }, 60 * 1000);
+  function resetAll() {
+    if (!confirm('당번 명단을 처음 샘플(' + SAMPLE_NAMES.join(', ') + ')로 되돌릴까?')) return;
+    state = defaultState();
+    saveState();
+    render();
+    animateBoard();
+    toast('처음 상태로 돌아갔어!');
+  }
+
+  // Events
+  elAddBtn.addEventListener('click', function () {
+    addName(elNewName.value);
+    elNewName.value = '';
+    elNewName.focus();
+  });
+  elNewName.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      addName(elNewName.value);
+      elNewName.value = '';
+    }
+  });
+  elSyncBtn.addEventListener('click', function () {
+    var v = elSyncSel.value;
+    if (v === '') return;
+    syncTo(parseInt(v, 10));
+  });
+  elResetBtn.addEventListener('click', resetAll);
+
+  // Persist first-run state so refresh keeps it immediately
+  if (!localStorage.getItem(STORAGE_KEY)) saveState();
 
   render();
+  animateBoard();
 })();
 </script>
 </body>
