@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#f3ecdc" />
+<title>오산SW고 1학년 · 라이브 바이브 코딩 데모</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:       #f3ecdc;
+    --paper-soft:  #fffbf0;
+    --ink:         #2a2620;
+    --ink-soft:    #6b6358;
+    --ink-fade:    #b3a994;
+
+    --c-01: #ffc1c1; /* 마감 — 핑크 */
+    --c-02: #b6f0c8; /* 당번 — 민트 */
+    --c-03: #b9dcff; /* 일정 — 스카이 */
+    --c-04: #fff39a; /* 학습 — 옐로 */
+    --c-05: #ffd6a5; /* 공지 — 피치 */
+
+    --tape: rgba(255, 230, 120, 0.78);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    overscroll-behavior-y: contain;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent 0,
+      transparent 31px,
+      rgba(140, 100, 70, 0.10) 31px,
+      rgba(140, 100, 70, 0.10) 32px
+    );
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      radial-gradient(circle at 14% 20%, rgba(255, 200, 110, 0.12) 0, transparent 45%),
+      radial-gradient(circle at 86% 78%, rgba(200, 130, 70, 0.08) 0, transparent 50%);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 36px 22px calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* 헤더 */
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .badge-stamp {
+    display: inline-block;
+    font-family: "Jua", "Gaegu", sans-serif;
+    font-size: 14px;
+    color: #b76a00;
+    border: 2.5px solid #b76a00;
+    padding: 3px 12px 2px;
+    border-radius: 8px;
+    transform: rotate(-2deg);
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  .title {
+    font-family: "Jua", sans-serif;
+    font-size: clamp(36px, 9vw, 52px);
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    position: relative;
+    display: inline-block;
+  }
+  .title .accent {
+    position: relative;
+    display: inline-block;
+  }
+  .title .accent::after {
+    content: "";
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    bottom: 3px;
+    height: 16px;
+    background: var(--c-04);
+    z-index: -1;
+    opacity: 0.85;
+    transform: skewX(-4deg);
+    border-radius: 2px;
+  }
+  .subtitle {
+    font-family: "Gaegu", sans-serif;
+    font-size: 20px;
+    color: var(--ink-soft);
+    margin: 12px 0 0;
+    letter-spacing: -0.4px;
+    word-break: keep-all;
+  }
+
+  /* 안내 카드 */
+  .intro {
+    margin: 28px auto 30px;
+    padding: 18px 20px;
+    background: var(--paper-soft);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0 0 var(--ink);
+    position: relative;
+    font-family: "Gaegu", sans-serif;
+    font-size: 18px;
+    color: var(--ink);
+    line-height: 1.55;
+    letter-spacing: -0.3px;
+    text-align: center;
+    word-break: keep-all;
+  }
+  .intro::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 76px;
+    height: 16px;
+    background: var(--tape);
+    border-radius: 1px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  }
+  .intro b {
+    font-weight: 700;
+    background: var(--c-04);
+    padding: 0 6px;
+    border-radius: 4px;
+  }
+
+  /* 카드 그리드 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 520px) {
+    .grid { grid-template-columns: 1fr; gap: 18px; }
+  }
+
+  .card {
+    position: relative;
+    padding: 22px 20px 20px;
+    background: var(--card-bg, var(--c-04));
+    border: 2px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 0 var(--ink);
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 0 var(--ink);
+  }
+  .card:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+
+  .card:nth-child(1) { --card-bg: var(--c-01); transform: rotate(-0.6deg); }
+  .card:nth-child(2) { --card-bg: var(--c-02); transform: rotate(0.5deg); }
+  .card:nth-child(3) { --card-bg: var(--c-03); transform: rotate(-0.4deg); }
+  .card:nth-child(4) { --card-bg: var(--c-04); transform: rotate(0.6deg); }
+  .card:nth-child(5) { --card-bg: var(--c-05); transform: rotate(-0.5deg); }
+
+  .card:nth-child(1):hover { transform: rotate(-0.6deg) translate(-2px, -2px); }
+  .card:nth-child(2):hover { transform: rotate(0.5deg) translate(-2px, -2px); }
+  .card:nth-child(3):hover { transform: rotate(-0.4deg) translate(-2px, -2px); }
+  .card:nth-child(4):hover { transform: rotate(0.6deg) translate(-2px, -2px); }
+  .card:nth-child(5):hover { transform: rotate(-0.5deg) translate(-2px, -2px); }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 24px;
+    width: 64px;
+    height: 16px;
+    background: var(--tape);
+    transform: rotate(-3deg);
+    border-radius: 1px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  }
+
+  .card-num {
+    font-family: "Jua", sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: 1.5px;
+    opacity: 0.55;
+    margin-bottom: 2px;
+  }
+  .card-cat {
+    display: inline-block;
+    font-family: "Jua", sans-serif;
+    font-size: 13px;
+    background: var(--ink);
+    color: var(--paper-soft);
+    padding: 3px 10px 2px;
+    border-radius: 999px;
+    letter-spacing: -0.3px;
+    align-self: flex-start;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-family: "Jua", sans-serif;
+    font-size: 26px;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    color: var(--ink);
+    word-break: keep-all;
+  }
+  .card-desc {
+    font-family: "Gaegu", sans-serif;
+    font-size: 17px;
+    color: var(--ink);
+    opacity: 0.78;
+    letter-spacing: -0.3px;
+    line-height: 1.45;
+    word-break: keep-all;
+    margin-bottom: 16px;
+  }
+  .card-foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1.5px dashed rgba(42, 38, 32, 0.25);
+    font-family: "Gaegu", sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .card-foot .go {
+    font-family: "Jua", sans-serif;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  /* 푸터 */
+  .footer {
+    margin-top: 44px;
+    text-align: center;
+    font-family: "Gaegu", sans-serif;
+    font-size: 16px;
+    color: var(--ink-fade);
+    letter-spacing: -0.3px;
+    line-height: 1.6;
+  }
+  .footer a {
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="badge-stamp">LIVE DEMO</span>
+      <h1 class="title">바이브 코딩 <span class="accent">데모</span></h1>
+      <p class="subtitle">학교에서 자주 불편한 일 5가지<br>AI 에이전트가 10분 안에 한 화면짜리 도구로 ✨</p>
+    </header>
+
+    <div class="intro">
+      슬리도에 올라온 답을 보고 가장 가까운 카드를 골라 보자.<br>
+      각 카드의 데모를 톡 누르면 <b>지금 바로</b> 동작하는 프로토타입이 열려요.
+    </div>
+
+    <div class="grid">
+      <a class="card" href="ITEM-01/">
+        <div class="card-num">ITEM 01</div>
+        <span class="card-cat">마감</span>
+        <div class="card-title">수행평가 마감 알리미</div>
+        <div class="card-desc">수행평가·과제 마감일을 D-DAY로 한눈에. 가까울수록 빨갛게 ✏️</div>
+        <div class="card-foot">
+          <span>스티키 노트</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="ITEM-02/">
+        <div class="card-num">ITEM 02</div>
+        <span class="card-cat">당번</span>
+        <div class="card-title">청소 당번 알리미</div>
+        <div class="card-desc">친구 명단만 등록해두면 월요일마다 자동으로 다음 사람 🧹</div>
+        <div class="card-foot">
+          <span>칠판 보드</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="ITEM-03/">
+        <div class="card-num">ITEM 03</div>
+        <span class="card-cat">일정</span>
+        <div class="card-title">오늘 어디 가지?</div>
+        <div class="card-desc">학원·방과후 시간표 + 다음 일정까지 카운트다운 ⏰</div>
+        <div class="card-foot">
+          <span>요일별 시간표</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="ITEM-04/">
+        <div class="card-num">ITEM 04</div>
+        <span class="card-cat">학습</span>
+        <div class="card-title">오늘 할 일</div>
+        <div class="card-desc">과목별 색깔로 분류된 오늘의 체크리스트. 다 끝내면 짝짝짝 👏</div>
+        <div class="card-foot">
+          <span>오늘 노트</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="ITEM-05/">
+        <div class="card-num">ITEM 05</div>
+        <span class="card-cat">공지</span>
+        <div class="card-title">공지 모아보기</div>
+        <div class="card-desc">단톡·공지를 한 보드에. 중요는 빨간 압정으로 콕 📌</div>
+        <div class="card-foot">
+          <span>코르크 보드</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="footer">
+      오산소프트웨어고 1학년 특강 5교시 · 라이브 바이브 코딩 데모<br>
+      <a href="https://github.com/nalbam/os-sw-high-02">github.com/nalbam/os-sw-high-02</a>
+    </div>
+  </div>
+</body>
+</html>
