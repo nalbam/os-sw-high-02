@@ -21,6 +21,7 @@
     --c-03: #b9dcff; /* 일정 — 스카이 */
     --c-04: #fff39a; /* 학습 — 옐로 */
     --c-05: #ffd6a5; /* 공지 — 피치 */
+    --c-06: #d4c5f9; /* 점수 — 라벤더 */
 
     --tape: rgba(255, 230, 120, 0.78);
   }
@@ -199,12 +200,14 @@
   .card:nth-child(3) { --card-bg: var(--c-03); transform: rotate(-0.4deg); }
   .card:nth-child(4) { --card-bg: var(--c-04); transform: rotate(0.6deg); }
   .card:nth-child(5) { --card-bg: var(--c-05); transform: rotate(-0.5deg); }
+  .card:nth-child(6) { --card-bg: var(--c-06); transform: rotate(0.4deg); }
 
   .card:nth-child(1):hover { transform: rotate(-0.6deg) translate(-2px, -2px); }
   .card:nth-child(2):hover { transform: rotate(0.5deg) translate(-2px, -2px); }
   .card:nth-child(3):hover { transform: rotate(-0.4deg) translate(-2px, -2px); }
   .card:nth-child(4):hover { transform: rotate(0.6deg) translate(-2px, -2px); }
   .card:nth-child(5):hover { transform: rotate(-0.5deg) translate(-2px, -2px); }
+  .card:nth-child(6):hover { transform: rotate(0.4deg) translate(-2px, -2px); }
 
   .card::before {
     content: "";
@@ -299,7 +302,7 @@
     <header>
       <span class="badge-stamp">LIVE DEMO</span>
       <h1 class="title">바이브 코딩 <span class="accent">데모</span></h1>
-      <p class="subtitle">학교에서 자주 불편한 일 5가지<br>AI 에이전트가 10분 안에 한 화면짜리 도구로 ✨</p>
+      <p class="subtitle">학교에서 자주 불편한 일 6가지<br>AI 에이전트가 10분 안에 한 화면짜리 도구로 ✨</p>
     </header>
 
     <div class="intro">
@@ -359,6 +362,17 @@
         <div class="card-desc">단톡·공지를 한 보드에. 중요는 빨간 압정으로 콕 📌</div>
         <div class="card-foot">
           <span>코르크 보드</span>
+          <span class="go">데모 열기 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="ITEM-06/">
+        <div class="card-num">ITEM 06</div>
+        <span class="card-cat">점수</span>
+        <div class="card-title">체육대회 점수판</div>
+        <div class="card-desc">종목 결과만 입력하면 반별 총점 자동 집계. 1·2·3등은 🥇🥈🥉</div>
+        <div class="card-foot">
+          <span>운동장 전광판</span>
           <span class="go">데모 열기 →</span>
         </div>
       </a>

@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1f3a35">
+  <title>체육대회 반별 점수판 · 1학년</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --chalk:        #1f3a35;
+      --chalk-deep:   #142824;
+      --chalk-line:   rgba(255, 255, 255, 0.07);
+      --wood:         #a06a3a;
+      --wood-dark:    #6f4520;
+      --paper:        #fffaea;
+      --paper-line:   rgba(120, 90, 50, 0.16);
+      --paper-edge:   rgba(80, 55, 25, 0.18);
+      --ink:          #2a2620;
+      --ink-soft:     #6b6358;
+      --ink-fade:     #b3a994;
+      --tape:         rgba(255, 220, 120, 0.85);
+      --lavender:     #d4c5f9;
+      --lavender-ink: #463a7a;
+      --gold:         #f6c43b;
+      --silver:       #d8d8e0;
+      --bronze:       #e2a26a;
+      --safe:         #4c9e74;
+      --danger:       #c84a3f;
+
+      --c-1: #ffb4b4;
+      --c-2: #ffd58a;
+      --c-3: #b9e88e;
+      --c-4: #9ed8ff;
+      --c-5: #d6b8ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    body {
+      font-family: "Gaegu", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 230, 160, 0.5) 0, transparent 38%),
+        radial-gradient(circle at 82% 88%, rgba(200, 165, 240, 0.45) 0, transparent 42%),
+        repeating-linear-gradient(transparent 0 31px, rgba(140, 100, 70, 0.10) 31px 32px),
+        #f3ecdc;
+      line-height: 1.4;
+      padding: 22px 14px calc(40px + env(safe-area-inset-bottom));
+      overscroll-behavior-y: contain;
+    }
+
+    .wrap {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ─── 헤더 ─── */
+    header {
+      text-align: center;
+      padding: 6px 4px 0;
+    }
+    .stamp {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 2px dashed var(--wood-dark);
+      border-radius: 999px;
+      color: var(--wood-dark);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      transform: rotate(-2deg);
+      background: rgba(255, 250, 234, 0.6);
+    }
+    h1 {
+      font-family: "Jua", "Gaegu", sans-serif;
+      font-weight: 700;
+      font-size: clamp(28px, 6vw, 38px);
+      margin-top: 8px;
+      color: #3a2a14;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    /* ─── 종목 추가 폼 (종이) ─── */
+    .form-card {
+      position: relative;
+      background:
+        linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0 / 100% 26px,
+        var(--paper);
+      border: 1px solid var(--paper-edge);
+      border-radius: 10px;
+      padding: 22px 18px 18px;
+      box-shadow:
+        0 1px 0 #fff inset,
+        0 12px 24px rgba(60, 40, 20, 0.10),
+        0 2px 0 rgba(0, 0, 0, 0.04);
+    }
+    .form-card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      width: 90px;
+      height: 22px;
+      background: var(--tape);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+    .form-title {
+      font-family: "Jua", sans-serif;
+      font-size: 18px;
+      color: #3a2a14;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    form { display: grid; gap: 10px; }
+    label {
+      font-size: 13px;
+      color: var(--ink-soft);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--paper-edge);
+      border-radius: 8px;
+      background: #fffefa;
+      color: var(--ink);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--lavender-ink);
+      box-shadow: 0 0 0 3px rgba(70, 58, 122, 0.15);
+    }
+    select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 32px; }
+
+    .medal-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    button.primary {
+      font: inherit;
+      font-family: "Jua", sans-serif;
+      font-size: 17px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--lavender);
+      color: var(--lavender-ink);
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #b6a2e0, 0 6px 12px rgba(70, 58, 122, 0.15);
+      transition: transform 0.06s, box-shadow 0.06s;
+      margin-top: 4px;
+    }
+    button.primary:hover { transform: translateY(-1px); }
+    button.primary:active { transform: translateY(2px); box-shadow: 0 1px 0 #b6a2e0; }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .form-hint strong { color: var(--lavender-ink); }
+
+    /* ─── 리더보드 (칠판) ─── */
+    .board {
+      position: relative;
+      border: 11px solid var(--wood);
+      border-radius: 10px;
+      padding: 20px 16px 22px;
+      background:
+        repeating-linear-gradient(transparent 0 34px, var(--chalk-line) 34px 35px),
+        linear-gradient(160deg, var(--chalk) 0%, var(--chalk-deep) 100%);
+      color: #f6efd2;
+      box-shadow:
+        0 0 0 2px var(--wood-dark) inset,
+        0 18px 36px rgba(20, 30, 25, 0.30);
+    }
+    .board::before, .board::after {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      background: radial-gradient(circle at 35% 35%, #f3d27a, #a07820 70%);
+      border-radius: 50%;
+      top: -7px;
+    }
+    .board::before { left: 14px; }
+    .board::after { right: 14px; }
+
+    .board-title {
+      font-family: "Jua", sans-serif;
+      font-size: clamp(20px, 4.5vw, 24px);
+      text-align: center;
+      color: #fff7c9;
+      margin-bottom: 14px;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+      letter-spacing: 1px;
+    }
+
+    .leaderboard { display: flex; flex-direction: column; gap: 8px; }
+    .row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.25s, background 0.25s;
+    }
+    .row .rank {
+      font-family: "Jua", sans-serif;
+      font-size: 18px;
+      text-align: center;
+      color: rgba(255, 247, 201, 0.7);
+    }
+    .row .name {
+      font-family: "Jua", sans-serif;
+      font-size: clamp(20px, 5vw, 26px);
+      letter-spacing: 1px;
+    }
+    .row .score {
+      font-family: "Jua", sans-serif;
+      font-size: clamp(22px, 5.5vw, 30px);
+      color: #fff7c9;
+    }
+    .row .score small { font-size: 0.6em; color: rgba(255, 247, 201, 0.6); margin-left: 2px; }
+
+    .row.gold {
+      background: linear-gradient(90deg, rgba(246, 196, 59, 0.22), rgba(246, 196, 59, 0.06));
+      border-color: rgba(246, 196, 59, 0.6);
+    }
+    .row.gold .rank, .row.gold .name, .row.gold .score { color: var(--gold); text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+    .row.silver {
+      background: linear-gradient(90deg, rgba(216, 216, 224, 0.20), rgba(216, 216, 224, 0.05));
+      border-color: rgba(216, 216, 224, 0.5);
+    }
+    .row.silver .rank, .row.silver .name, .row.silver .score { color: var(--silver); }
+    .row.bronze {
+      background: linear-gradient(90deg, rgba(226, 162, 106, 0.22), rgba(226, 162, 106, 0.06));
+      border-color: rgba(226, 162, 106, 0.5);
+    }
+    .row.bronze .rank, .row.bronze .name, .row.bronze .score { color: var(--bronze); }
+
+    .empty-board {
+      text-align: center;
+      padding: 30px 10px;
+      color: rgba(246, 239, 210, 0.55);
+      font-size: 15px;
+    }
+
+    /* ─── 히스토리 ─── */
+    .history-section h2 {
+      font-family: "Jua", sans-serif;
+      font-size: 20px;
+      color: #3a2a14;
+      margin-bottom: 12px;
+      padding-left: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .history-section h2 .count {
+      font-size: 13px;
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, 0.5);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 12px;
+    }
+    .history-card {
+      position: relative;
+      background: var(--paper);
+      border: 1px solid var(--paper-edge);
+      border-radius: 10px;
+      padding: 14px 16px 12px;
+      box-shadow:
+        0 1px 0 #fff inset,
+        0 6px 12px rgba(60, 40, 20, 0.08);
+      transform: rotate(-0.4deg);
+    }
+    .history-card:nth-child(2n) { transform: rotate(0.5deg); }
+    .history-card:nth-child(3n) { transform: rotate(-0.2deg); }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-family: "Jua", sans-serif;
+      font-size: 19px;
+      color: #3a2a14;
+      letter-spacing: -0.2px;
+    }
+    .card-delete {
+      font: inherit;
+      font-family: "Gaegu", sans-serif;
+      font-size: 13px;
+      color: var(--danger);
+      background: transparent;
+      border: 1.5px solid rgba(200, 74, 63, 0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .card-delete:hover { background: rgba(200, 74, 63, 0.08); }
+
+    .card-medals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 4px;
+      font-size: 15px;
+      color: var(--ink);
+    }
+    .card-medals .medal { white-space: nowrap; }
+    .card-medals .sep { color: var(--ink-fade); padding: 0 2px; }
+    .empty-history {
+      text-align: center;
+      padding: 24px 10px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1.5px dashed var(--paper-edge);
+      border-radius: 10px;
+    }
+
+    /* ─── 토스트 ─── */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(20, 40, 36, 0.92);
+      color: #fff7c9;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-family: "Jua", sans-serif;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 99;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ─── 반응형 ─── */
+    @media (max-width: 420px) {
+      body { padding: 16px 10px 40px; }
+      .row { grid-template-columns: 44px 1fr auto; padding: 10px 12px; gap: 8px; }
+      .row .name { font-size: 22px; }
+      .row .score { font-size: 24px; }
+    }
+
+    /* ─── 폰트 폴백 (오프라인) ─── */
+    @font-face { font-family: "Jua"; src: local("Jua"); font-display: swap; }
+    @font-face { font-family: "Gaegu"; src: local("Gaegu"); font-display: swap; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="stamp">1학년 체육대회</span>
+      <h1>반별 점수판 🏆</h1>
+      <div class="subtitle">1등 30점 · 2등 20점 · 3등 10점</div>
+    </header>
+
+    <!-- 종목 추가 -->
+    <section class="form-card">
+      <div class="form-title">📝 종목 결과 입력</div>
+      <form id="event-form" autocomplete="off">
+        <div>
+          <label for="event-name">종목 이름</label>
+          <input type="text" id="event-name" placeholder="예: 이어달리기, 줄다리기, 피구" required maxlength="30">
+        </div>
+        <div class="row-3">
+          <div>
+            <label for="rank-1" class="medal-label">🥇 1등</label>
+            <select id="rank-1" required></select>
+          </div>
+          <div>
+            <label for="rank-2" class="medal-label">🥈 2등</label>
+            <select id="rank-2" required></select>
+          </div>
+          <div>
+            <label for="rank-3" class="medal-label">🥉 3등</label>
+            <select id="rank-3" required></select>
+          </div>
+        </div>
+        <button type="submit" class="primary">결과 저장하기 ✏️</button>
+        <div class="form-hint" id="form-hint">서로 다른 반을 골라주세요.</div>
+      </form>
+    </section>
+
+    <!-- 리더보드 -->
+    <section class="board" aria-label="반별 총점 리더보드">
+      <div class="board-title">⭐ 종합 리더보드 ⭐</div>
+      <div class="leaderboard" id="leaderboard"></div>
+    </section>
+
+    <!-- 히스토리 -->
+    <section class="history-section">
+      <h2>📚 종목 기록 <span class="count" id="history-count">0개</span></h2>
+      <div class="history-list" id="history"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "item06.sports.events.v1";
+      const CLASSES = ["1-1", "1-2", "1-3", "1-4", "1-5"];
+      const POINTS = [30, 20, 10];
+      const MEDALS = ["🥇", "🥈", "🥉"];
+      const RANK_LABELS = { 0: "1위", 1: "2위", 2: "3위" };
+
+      const SAMPLE = [
+        { id: "s1", name: "이어달리기", winners: ["1-3", "1-1", "1-5"] },
+        { id: "s2", name: "줄다리기",   winners: ["1-2", "1-3", "1-4"] },
+        { id: "s3", name: "피구",       winners: ["1-3", "1-2", "1-1"] },
+      ];
+
+      const $form     = document.getElementById("event-form");
+      const $name     = document.getElementById("event-name");
+      const $hint     = document.getElementById("form-hint");
+      const $board    = document.getElementById("leaderboard");
+      const $history  = document.getElementById("history");
+      const $count    = document.getElementById("history-count");
+      const $toast    = document.getElementById("toast");
+      const selects   = [0, 1, 2].map(i => document.getElementById(`rank-${i + 1}`));
+
+      /* ─── 저장소 ─── */
+      function load() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw === null) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE));
+            return SAMPLE.slice();
+          }
+          const data = JSON.parse(raw);
+          return Array.isArray(data) ? data : [];
+        } catch {
+          return [];
+        }
+      }
+      function save(events) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+      }
+
+      let events = load();
+
+      /* ─── 폼 초기화 ─── */
+      function fillSelect(sel, defaultIdx) {
+        sel.innerHTML = "";
+        CLASSES.forEach((cls, i) => {
+          const opt = document.createElement("option");
+          opt.value = cls;
+          opt.textContent = cls + "반";
+          if (i === defaultIdx) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      }
+      function resetForm() {
+        $name.value = "";
+        fillSelect(selects[0], 0);
+        fillSelect(selects[1], 1);
+        fillSelect(selects[2], 2);
+        validate();
+      }
+      function validate() {
+        const picks = selects.map(s => s.value);
+        const dup = new Set(picks).size !== picks.length;
+        $hint.innerHTML = dup
+          ? '<span style="color: var(--danger)">⚠️ 1·2·3등은 서로 다른 반이어야 합니다.</span>'
+          : "서로 다른 반을 골라주세요. <strong>1등 30점 · 2등 20점 · 3등 10점</strong>";
+        $form.querySelector("button[type=submit]").disabled = dup;
+        return !dup;
+      }
+
+      /* ─── 점수 집계 ─── */
+      function computeTotals() {
+        const totals = Object.fromEntries(CLASSES.map(c => [c, 0]));
+        for (const ev of events) {
+          ev.winners.forEach((cls, i) => {
+            if (cls in totals) totals[cls] += POINTS[i];
+          });
+        }
+        return totals;
+      }
+      function rankedClasses() {
+        const totals = computeTotals();
+        const entries = CLASSES.map(c => ({ cls: c, score: totals[c] }));
+        entries.sort((a, b) => b.score - a.score || a.cls.localeCompare(b.cls));
+        // 동점 → 같은 순위
+        let rank = 0;
+        let prev = null;
+        let sameCount = 0;
+        for (const e of entries) {
+          if (prev !== null && e.score === prev) {
+            e.rank = rank;
+            sameCount++;
+          } else {
+            rank = rank + 1 + sameCount;
+            sameCount = 0;
+            // 첫 항목 또는 점수 달라짐
+            e.rank = (prev === null) ? 1 : rank;
+          }
+          prev = e.score;
+        }
+        return entries;
+      }
+
+      /* ─── 렌더 ─── */
+      function rankLabel(rank, ties) {
+        const base = rank === 1 ? "1위" : rank === 2 ? "2위" : rank === 3 ? "3위" : rank + "위";
+        return ties ? "공동 " + base : base;
+      }
+
+      function renderBoard() {
+        $board.innerHTML = "";
+        if (events.length === 0) {
+          $board.innerHTML = '<div class="empty-board">아직 입력된 종목이 없어요.<br>위에서 첫 결과를 등록해 보세요! 🎽</div>';
+          return;
+        }
+        const list = rankedClasses();
+        const rankCounts = {};
+        for (const e of list) rankCounts[e.rank] = (rankCounts[e.rank] || 0) + 1;
+
+        for (const e of list) {
+          const row = document.createElement("div");
+          const isTie = rankCounts[e.rank] > 1;
+          const cls = (e.score > 0)
+            ? (e.rank === 1 ? "gold" : e.rank === 2 ? "silver" : e.rank === 3 ? "bronze" : "")
+            : "";
+          row.className = "row" + (cls ? " " + cls : "");
+          row.innerHTML = `
+            <div class="rank">${ e.score > 0 && e.rank <= 3 ? MEDALS[e.rank - 1] : (isTie ? "공동 " : "") + e.rank + "위" }</div>
+            <div class="name">${ e.cls }반${ isTie && e.score > 0 ? ' <small style="font-size:0.55em;opacity:0.7">(공동 ' + e.rank + '위)</small>' : '' }</div>
+            <div class="score">${ e.score }<small>점</small></div>
+          `;
+          $board.appendChild(row);
+        }
+      }
+
+      function renderHistory() {
+        $count.textContent = events.length + "개";
+        $history.innerHTML = "";
+        if (events.length === 0) {
+          $history.innerHTML = '<div class="empty-history">기록된 종목이 아직 없어요 🎽</div>';
+          return;
+        }
+        // 최신순 (입력 역순)
+        const sorted = events.slice().reverse();
+        for (const ev of sorted) {
+          const card = document.createElement("div");
+          card.className = "history-card";
+          const medals = ev.winners.map((cls, i) =>
+            `<span class="medal">${ MEDALS[i] } <strong>${ cls }</strong></span>`
+          ).join('<span class="sep">·</span>');
+          card.innerHTML = `
+            <div class="card-head">
+              <div class="card-title">${ escapeHtml(ev.name) }</div>
+              <button class="card-delete" data-id="${ ev.id }" aria-label="${ escapeHtml(ev.name) } 삭제">삭제</button>
+            </div>
+            <div class="card-medals">${ medals }</div>
+          `;
+          $history.appendChild(card);
+        }
+      }
+
+      function render() {
+        renderBoard();
+        renderHistory();
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[c]));
+      }
+
+      /* ─── 이벤트 ─── */
+      $form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+        const name = $name.value.trim();
+        if (!name) return;
+        const winners = selects.map(s => s.value);
+        const id = "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+        events.push({ id, name, winners });
+        save(events);
+        render();
+        toast(`'${ name }' 결과를 저장했어요!`);
+        resetForm();
+        $name.focus();
+      });
+
+      selects.forEach(s => s.addEventListener("change", validate));
+      $name.addEventListener("input", validate);
+
+      $history.addEventListener("click", (e) => {
+        const btn = e.target.closest(".card-delete");
+        if (!btn) return;
+        const id = btn.dataset.id;
+        const ev = events.find(x => x.id === id);
+        if (!ev) return;
+        if (!confirm(`'${ ev.name }' 종목 기록을 삭제할까요?\n관련 점수도 함께 빠집니다.`)) return;
+        events = events.filter(x => x.id !== id);
+        save(events);
+        render();
+        toast("기록을 삭제했어요");
+      });
+
+      /* ─── 토스트 ─── */
+      let toastTimer = null;
+      function toast(msg) {
+        $toast.textContent = msg;
+        $toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => $toast.classList.remove("show"), 1800);
+      }
+
+      /* ─── 시작 ─── */
+      resetForm();
+      render();
+    })();
+  </script>
+</body>
+</html>

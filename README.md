@@ -2,7 +2,7 @@
 
 오산소프트웨어고 1학년 특강 5교시 **라이브 바이브 코딩 데모** 작업 디렉토리.
 
-학생들이 손들기·슬리도에 적은 *학교에서 자주 불편한 일* 5가지를 — Codex 같은 AI 에이전트에게 **바이브 코딩 프롬프트**로 던져서 한 화면짜리 프로토타입을 그 자리에서 만든다.
+학생들이 손들기·슬리도에 적은 *학교에서 자주 불편한 일* 6가지를 — Codex 같은 AI 에이전트에게 **바이브 코딩 프롬프트**로 던져서 한 화면짜리 프로토타입을 그 자리에서 만든다.
 
 ## 🔗 데모 보기
 
@@ -15,6 +15,7 @@ GitHub Pages: **<https://nalbam.github.io/os-sw-high-02/>**
 | **03** | 일정 | [ITEM-03.md](./ITEM-03.md) | [오늘 어디 가지?](https://nalbam.github.io/os-sw-high-02/ITEM-03/) |
 | **04** | 학습 | [ITEM-04.md](./ITEM-04.md) | [오늘 할 일](https://nalbam.github.io/os-sw-high-02/ITEM-04/) |
 | **05** | 공지 | [ITEM-05.md](./ITEM-05.md) | [공지 모아보기](https://nalbam.github.io/os-sw-high-02/ITEM-05/) |
+| **06** | 점수 | [ITEM-06.md](./ITEM-06.md) | [체육대회 점수판](https://nalbam.github.io/os-sw-high-02/ITEM-06/) |
 
 ## 🎤 라이브 사용 흐름
 
@@ -28,9 +29,9 @@ GitHub Pages: **<https://nalbam.github.io/os-sw-high-02/>**
 ```
 .
 ├── README.md            ← 이 파일
-├── ITEM-0X.md           ← 라이브 데모용 바이브 코딩 프롬프트 5개
+├── ITEM-0X.md           ← 라이브 데모용 바이브 코딩 프롬프트 6개
 └── docs/                ← GitHub Pages 루트
-    ├── index.html       ← 5개 데모를 모은 랜딩 페이지
+    ├── index.html       ← 6개 데모를 모은 랜딩 페이지
     └── ITEM-0X/
         └── index.html   ← 각 데모 (한 화면 프로토타입)
 ```
@@ -52,7 +53,7 @@ Settings → Pages
 - **Source**: `Deploy from a branch`
 - **Branch**: `main` · `/docs`
 
-설정 후 `https://nalbam.github.io/os-sw-high-02/` 로 접속하면 랜딩 페이지가 뜨고, 각 카드에서 5개의 데모로 들어갈 수 있다.
+설정 후 `https://nalbam.github.io/os-sw-high-02/` 로 접속하면 랜딩 페이지가 뜨고, 각 카드에서 6개의 데모로 들어갈 수 있다.
 
 ## 🧪 로컬에서 보기
 
